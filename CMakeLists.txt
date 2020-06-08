@@ -19,10 +19,20 @@ include_directories(${GLM_FOLDER})
 # to make the CMake file easier to change if the location of the glad library changes.
 set(GLAD_DIRECTORY ${DEPENDENCIES_FOLDER}/glad)
 include_directories(${GLAD_DIRECTORY})
-set(GLAD_SOURCES ${GLAD_DIRECTORY}/glad.c Render/VBO/BufferStorage.h Render/Shaders/ShaderProgramBase.cpp Render/Shaders/ShaderProgramBase.h Render/Shaders/InstanceShaderProgram.cpp Render/Shaders/InstanceShaderProgram.h Render/CommandCentre.cpp Render/CommandCentre.h ProgramSettings.h)
 
-add_executable(GameProtoType main.cpp ${GLAD_SOURCES} Window/RenderWindow.cpp Window/RenderWindow.h Logging/Logger.cpp
+
+add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c Window/RenderWindow.cpp Window/RenderWindow.h Logging/Logger.cpp
                Logging/Logger.h Logging/LoggerPIMPL.cpp Logging/LoggerPIMPL.h Render/CompileTimeChecks/ValidMappingFlags.h
-               Render/CompileTimeChecks/ValidBufferTarget.h Render/CompileTimeChecks/ValidBufferFlags.h)
+               Render/CompileTimeChecks/ValidBufferTarget.h Render/CompileTimeChecks/ValidBufferFlags.h
+               Render/VBO/BufferStorage.h Render/Shaders/ShaderProgramBase.cpp Render/Shaders/ShaderProgramBase.h
+               Render/Shaders/InstanceShaderProgram.cpp Render/Shaders/InstanceShaderProgram.h Render/CommandCentre.cpp
+               Render/CommandCentre.h ProgramSettings.h World/BoundingVolumes/AABB.cpp World/BoundingVolumes/AABB.h World/BoundingVolumes/StaticAABB.cpp
+               World/RangeImplementation/Range.h World/RangeImplementation/Range.cpp World/BoundingVolumes/StaticAABB.h World/BoundingVolumes/DynamicAABB.cpp
+                World/BoundingVolumes/DynamicAABB.h  World/RangeImplementation/Range.cpp World/RangeImplementation/XRange.cpp
+                World/RangeImplementation/XRange.h World/RangeImplementation/Range.cpp World/RangeImplementation/Range.h
+                World/RangeImplementation/YRange.cpp World/RangeImplementation/YRange.h World/RangeImplementation/ZRange.cpp
+                World/RangeImplementation/ZRange.h World/WorldLogic/GameWorld.cpp World/WorldLogic/GameWorld.h World/WorldLogic/TerrainRange.cpp
+                World/WorldLogic/TerrainRange.h World/WorldLogic/WorldDirection.h World/WorldLogic/GridSection.cpp World/WorldLogic/GridSection.h
+                World/WorldLogic/NewlyAddedCubes.h)
 
 target_link_libraries(GameProtoType glfw assimp -lstdc++fs)
