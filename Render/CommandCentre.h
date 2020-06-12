@@ -7,6 +7,11 @@
 
 #include "Shaders/InstanceShaderProgram.h"
 
+namespace Window::Camera
+{
+    class CameraObject;
+}
+
 namespace Render
 {
     /**
@@ -24,7 +29,7 @@ namespace Render
              *  Tells all required OpenGL classes to render their data. This function takes care of setting up OpenGL
              *  state before issuing the rendering calls.
              */
-            void render();
+            void render(const Window::Camera::CameraObject &camera);
 
         private:
 

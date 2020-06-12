@@ -1,6 +1,7 @@
 #include "glad.h"
 #include "Render/CommandCentre.h"
 #include "Window/RenderWindow.h"
+#include "World/WorldLogic/WorldGenerator.h"
 
 int main()
 {
@@ -9,6 +10,10 @@ int main()
 
     Render::CommandCentre commandCentre;
 
+    World::WorldLogic::WorldGenerator worldGenerator;
+
+    worldGenerator.createWorld();
+
     while (!renderWindow.windowShouldClose())
     {
         renderWindow.processInput();
@@ -16,7 +21,7 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        commandCentre.render();
+        commandCentre.render(renderWindow.getCamera());
 
         renderWindow.swapBuffers();
         renderWindow.pollEvents();

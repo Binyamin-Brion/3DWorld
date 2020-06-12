@@ -8,6 +8,7 @@
 #include <vector>
 #include "../Logging/LoggerPIMPL.h"
 #include <vec3.hpp>
+#include "Camera/CameraObject.h"
 
 class GLFWwindow;
 
@@ -27,6 +28,8 @@ namespace Window
              * @param screenHeight height of the render window
              */
             RenderWindow(const char* windowTitle, int majorVersionNumber, int minorVersionNumber, int screenWidth, int screenHeight);
+
+            [[nodiscard]] const Camera::CameraObject& getCamera() const;
 
             /**
              * Checks for any events that were given to the window.
@@ -68,6 +71,8 @@ namespace Window
              */
             static void frameBufferSizeCalBack(GLFWwindow *window, int width, int height);
 
+            static void mouseButtonCallBack(GLFWwindow *window, int button, int action, int mods);
+
             /**
              * Callback for cursor movement. The camera is rotated when this function is called assuming the game is an
              * appropriate state for such a change to the camera to occur.
@@ -83,6 +88,9 @@ namespace Window
             int width;
             int height;
 
+            static bool middleButtonDown;
+
+            static Camera::CameraObject camera;
             static Logging::LoggerPIMPL logger;
     };
 }

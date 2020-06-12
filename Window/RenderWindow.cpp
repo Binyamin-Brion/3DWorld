@@ -20,7 +20,9 @@ namespace Window
                                     const GLchar* message,
                                     const void* userParam);
 
+    Camera::CameraObject RenderWindow::camera;
     Logging::LoggerPIMPL RenderWindow::logger{"input.txt"};
+    bool RenderWindow::middleButtonDown = false;
 
     RenderWindow::RenderWindow(const char* windowTitle, int majorVersionNumber, int minorVersionNumber, int screenWidth, int screenHeight)
             :
@@ -50,8 +52,9 @@ namespace Window
 
         glfwMakeContextCurrent(window);
         glfwSetFramebufferSizeCallback(window, frameBufferSizeCalBack);
+        glfwSetMouseButtonCallback(window, mouseButtonCallBack);
         glfwSetCursorPosCallback(window, mouseCallBack);
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+     //   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
         {
@@ -73,8 +76,14 @@ namespace Window
             }
 
         #endif
+
+        camera.updateScreenSize(width, height);
     }
 
+    const Camera::CameraObject &RenderWindow::getCamera() const
+    {
+        return camera;
+    }
 
     void RenderWindow::pollEvents()
     {
@@ -92,21 +101,29 @@ namespace Window
 
         if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         {
+            camera.move(Camera::CameraMovement::Forwards);
+
             logger.writeMessage("Pressed W");
         }
 
         if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         {
+            camera.move(Camera::CameraMovement::Left);
+
             logger.writeMessage("Pressed A");
         }
 
         if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         {
+            camera.move(Camera::CameraMovement::Backwards);
+
             logger.writeMessage("Pressed S");
         }
 
         if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         {
+            camera.move(Camera::CameraMovement::Right);
+
             logger.writeMessage("Pressed D");
         }
     }
@@ -132,7 +149,26 @@ namespace Window
     {
         glViewport(0, 0, width, height);
 
+        camera.updateScreenSize(width, height);
+
         logger.writeMessage("Changed to size: " + std::to_string(width) + " , " + std::to_string(height));
+    }
+
+    void RenderWindow::mouseButtonCallBack(GLFWwindow *window, int button, int action, int mods)
+    {
+        if(button == GLFW_MOUSE_BUTTON_MIDDLE)
+        {
+            if(action == GLFW_PRESS)
+            {
+                middleButtonDown = true;
+            }
+            else
+            {
+                middleButtonDown = false;
+
+                camera.resetFirstRotation();
+            }
+        }
     }
 
     void RenderWindow::mouseCallBack(GLFWwindow *window, double xPosition, double yPosition)
@@ -146,6 +182,11 @@ namespace Window
             logger.writeMessage("Cursor to: " + std::to_string(xPosition) + " , " + std::to_string(yPosition));
 
             logCount = 0;
+        }
+
+        if(middleButtonDown)
+        {
+            camera.rotate(xPosition, yPosition);
         }
     }
 

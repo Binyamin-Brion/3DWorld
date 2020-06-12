@@ -4,6 +4,7 @@
 
 #include "CommandCentre.h"
 #include <vec3.hpp>
+#include "../Window/Camera/CameraObject.h"
 
 namespace Render
 {
@@ -29,8 +30,11 @@ namespace Render
         instanceShaderProgram.useProgram();
     }
 
-    void CommandCentre::render()
+    void CommandCentre::render(const Window::Camera::CameraObject &camera)
     {
+        instanceShaderProgram.uploadMat4x4("projection", camera.getProjectionMatrix());
+        instanceShaderProgram.uploadMat4x4("view", camera.getViewMatrix());
+
         glDrawArrays(GL_TRIANGLES, 0, 3);
     }
 }

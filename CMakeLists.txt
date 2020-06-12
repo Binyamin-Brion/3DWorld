@@ -31,8 +31,8 @@ add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c Window/RenderWind
                 World/BoundingVolumes/DynamicAABB.h  World/RangeImplementation/Range.cpp World/RangeImplementation/XRange.cpp
                 World/RangeImplementation/XRange.h World/RangeImplementation/Range.cpp World/RangeImplementation/Range.h
                 World/RangeImplementation/YRange.cpp World/RangeImplementation/YRange.h World/RangeImplementation/ZRange.cpp
-                World/RangeImplementation/ZRange.h World/WorldLogic/GameWorld.cpp World/WorldLogic/GameWorld.h World/WorldLogic/TerrainRange.cpp
-                World/WorldLogic/TerrainRange.h World/WorldLogic/WorldDirection.h World/WorldLogic/GridSection.cpp World/WorldLogic/GridSection.h
-                World/WorldLogic/NewlyAddedCubes.h)
+                World/RangeImplementation/ZRange.h World/WorldLogic/GridSection.h World/WorldLogic/GridSection.cpp World/WorldLogic/WorldGenerator.cpp
+        World/WorldLogic/WorldGenerator.h ProgramInformation/WorldSettings.cpp ProgramInformation/WorldSettings.h Window/Camera/CameraMovement.h
+        Window/Camera/CameraObject.cpp Window/Camera/CameraObject.h)
 
 target_link_libraries(GameProtoType glfw assimp -lstdc++fs)
