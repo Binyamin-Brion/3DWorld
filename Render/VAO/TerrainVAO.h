@@ -16,12 +16,36 @@ namespace Render::Shaders
 
 namespace Render::VAO
 {
+    /**
+     * Stores and render the terrain data.
+     *
+     * The terrain data is considered to be all of the surface cubes plus any gap filling cubes.
+     */
+
     class TerrainVAO : public VAOBase
     {
         public:
 
+            /**
+             * Initializes the VAO by uploading the required model vertices needed to render the terrain.
+             */
             TerrainVAO();
+
+            /**
+             * Renders the terrain that is within the viewing frustum.
+             *
+             * Note: This function will change uniforms in the passed in shader program!
+             *
+             * @param instanceShaderProgram used to render the program
+             * @param visibleGridSections vector of visible grid section IDs
+             */
             void render(Shaders::InstanceShaderProgram &instanceShaderProgram, const std::vector<unsigned int> &visibleGridSections);
+
+            /**
+             * Store the translations required for rendering in the buffer.
+             *
+             * @param translations of the cubes to render
+             */
             void uploadInstanceTranslations(const std::vector<glm::vec3> &translations);
 
         private:

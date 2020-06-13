@@ -39,42 +39,42 @@ namespace ModelLoading
              *
              * @return bounding box that surrounds the extrema of the vertices in all three dimensions
              */
-            const ::World::BoundingVolumes::StaticAABB& getBoundingAABB() const;
+            [[nodiscard]] const ::World::BoundingVolumes::StaticAABB& getBoundingAABB() const;
 
             /**
              * Get the indices that make up this mesh.
              *
              * @return reference to the indices vector
              */
-            const std::vector<unsigned int>& getIndices() const;
+            [[nodiscard]] const std::vector<unsigned int>& getIndices() const;
 
             /**
              * Get the normals that are associated with each mesh vertex.
              *
              * @return reference to the normal vector
              */
-            const std::vector<glm::vec3>& getNormals() const;
+            [[nodiscard]] const std::vector<glm::vec3>& getNormals() const;
 
             /**
              * Get the texture coordinates associated with each mesh vertex.
              *
              * @return reference to the texture coordinates vector
              */
-            const std::vector<glm::vec2>& getTextureCoords() const;
+            [[nodiscard]] const std::vector<glm::vec2>& getTextureCoords() const;
 
             /**
              * Get the texture location that the mesh uses.
              *
              * @return the location of the texture on the file system used by the mesh
              */
-            const std::string& getTextureLocation() const;
+            [[nodiscard]] const std::string& getTextureLocation() const;
 
             /**
              * Get the vertices that make up this mesh.
              *
              * @return reference to the vertices vector
              */
-            const std::vector<glm::vec3>& getVertices() const;
+            [[nodiscard]] const std::vector<glm::vec3>& getVertices() const;
 
 
         private:

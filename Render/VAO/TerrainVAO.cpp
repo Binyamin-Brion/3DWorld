@@ -24,6 +24,8 @@ namespace Render::VAO
         glVertexAttribDivisor(1, 1);
         glEnableVertexAttribArray(1);
 
+        // Upload cube render data to appropriate buffers
+
         std::vector<glm::vec3> modelVertices;
         std::vector<unsigned int> modelIndices;
 
@@ -49,13 +51,17 @@ namespace Render::VAO
 
         auto iterator = visibleGridSection.begin();
 
+        // Find all adjacent visible grid sections and render them in a single draw call.
         while(iterator != visibleGridSection.end())
         {
+            // The start of the adjacent grid section strip.
             unsigned int previousGridSectionID = *iterator;
             unsigned int gridSectionCount = 1;
 
+            // Count the number of adjacent grid sections.
             while(++iterator != visibleGridSection.end())
             {
+                // Current grid section is not adjacent to the previous one.
                 if((*iterator) != (previousGridSectionID + 1))
                 {
                     break;
@@ -69,6 +75,7 @@ namespace Render::VAO
             unsigned int elementOffset = previousGridSectionID * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
             unsigned int elementCount = gridSectionCount * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
 
+            // Cubes all always being rendered, so the indice count is always 36.
             glDrawElementsInstancedBaseInstance(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr, elementCount, elementOffset);
         }
     }

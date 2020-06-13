@@ -35,28 +35,28 @@ namespace Window::Camera
              *
              * @return draw used by the camera.
              */
-            float getDrawDistance() const;
+            [[nodiscard]] float getDrawDistance() const;
 
             /**
              * Get the camera's front vector.
              *
              * @return vector representing the direction the camera is facing.
              */
-            const glm::vec3 &getFront() const;
+            [[nodiscard]] const glm::vec3 &getFront() const;
 
             /**
              * Get the movement speed of the camera.
              *
              * @return the movement speed defined for the camera.
              */
-            float getMovementSpeed() const;
+            [[nodiscard]] float getMovementSpeed() const;
 
             /**
              * Get the projection matrix.
              *
              * @return projection matrix created by the camera
              */
-            const glm::mat4 &getProjectionMatrix() const;
+            [[nodiscard]] const glm::mat4 &getProjectionMatrix() const;
 
             /**
              * Get the view matrix.
@@ -65,14 +65,14 @@ namespace Window::Camera
              *
              * @return view matrix created by the camera
              */
-            const glm::mat4 &getViewMatrix() const;
+            [[nodiscard]] const glm::mat4 &getViewMatrix() const;
 
             /**
              * Get the position of the camera.
              *
              * @return position of the camera represented by a vector
              */
-            glm::vec3 getPosition() const;
+            [[nodiscard]] glm::vec3 getPosition() const;
 
             /**
              * Convert mouse coordinates to world coordinates.
@@ -83,7 +83,7 @@ namespace Window::Camera
              * @param mouseY y-position of the mouse cursor
              * @return vector representing the game-world coordinates of the cursor coordinates
              */
-            glm::vec3 getWorldCoordinates(int screenWidth, int screenHeight, int mouseX, int mouseY) const;
+            [[nodiscard]] glm::vec3 getWorldCoordinates(int screenWidth, int screenHeight, int mouseX, int mouseY) const;
 
             /**
              * Move the camera in the given direction.

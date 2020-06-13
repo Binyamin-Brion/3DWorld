@@ -9,10 +9,13 @@ namespace World::WorldLogic
 {
     void WorldGenerator::createWorld()
     {
+        // Simply aliases for actual value for readability purposes.
+
         const unsigned int gridSectionLength = ProgramInformation::WorldSettings::getGridSectionLength();
 
         const unsigned int yRangeLimits = std::numeric_limits<unsigned int>::max();
 
+        // Create grid sections and fill them with surface cubes.
         for(unsigned int x = 0; x < ProgramInformation::WorldSettings::getWorldLength(); x += gridSectionLength)
         {
             gridSections.emplace_back();

@@ -36,7 +36,7 @@ namespace ModelLoading
              * @param transformationMatrix matrix that transform the face from local space to world space
              * @return true if there is an intersection
              */
-            bool checkIntersection(const glm::vec3 &cameraPosition, const glm::vec3 &rayDirection, const glm::mat4x4 &transformationMatrix) const;
+            [[nodiscard]] bool checkIntersection(const glm::vec3 &cameraPosition, const glm::vec3 &rayDirection, const glm::mat4x4 &transformationMatrix) const;
 
         private:
 

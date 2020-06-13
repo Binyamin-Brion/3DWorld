@@ -36,7 +36,7 @@ namespace ModelLoading
              *
              * @return vector of AABB of the meshes that make up the model
              */
-            const std::vector<::World::BoundingVolumes::StaticAABB>& getBoundingVolumes() const;
+            [[nodiscard]] const std::vector<::World::BoundingVolumes::StaticAABB>& getBoundingVolumes() const;
 
             /**
              * Get the AABB that surrounds all of the meshes. Depending on the location of the meshes this AABB may
@@ -44,14 +44,14 @@ namespace ModelLoading
              *
              * @return AABB that encompasses all of the meshes
              */
-            ::World::BoundingVolumes::StaticAABB getOverallBoundingVolume() const;
+            [[nodiscard]] ::World::BoundingVolumes::StaticAABB getOverallBoundingVolume() const;
 
             /**
              * Get the individual meshes that compose the loaded model.
              *
              * @return vector of the model's meshes
              */
-            const std::vector<Mesh>& getMeshes() const;
+            [[nodiscard]] const std::vector<Mesh>& getMeshes() const;
 
         private:
 

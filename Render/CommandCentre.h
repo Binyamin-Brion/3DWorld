@@ -31,14 +31,17 @@ namespace Render
     {
         public:
 
-            CommandCentre();
-
             /**
              *  Tells all required OpenGL classes to render their data. This function takes care of setting up OpenGL
              *  state before issuing the rendering calls.
              */
             void render(const Window::Camera::CameraObject &camera);
 
+            /**
+             * Uploads the world data to the appropriate VAO for rendering.
+             *
+             * @param gridSections containing the world data to render
+             */
             void uploadWorld(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections);
 
         private:
@@ -47,12 +50,12 @@ namespace Render
 
             Shaders::InstanceShaderProgram instanceShaderProgram;
 
-            unsigned int vao;
-            unsigned int vbo;
-
             VAO::TerrainVAO terrainVao;
             FrustumCulling::FrustumCuller frustumCuller;
 
+            // Stripped out information of the passed in grid sections, and to avoid holding a reference to the passed in
+            // grid sections (as information stored in the grid section is required even after the call to uploadWorld()
+            // is done executing).
             struct GridSectionInformation
             {
                 unsigned int gridSectionID;
