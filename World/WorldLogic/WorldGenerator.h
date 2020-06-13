@@ -14,13 +14,13 @@ namespace World::WorldLogic
         public:
 
             void createWorld();
-            const std::vector<GridSection>& getTerrainData() const;
+            [[nodiscard]] const std::vector<std::vector<GridSection>>& getTerrainData() const;
 
         private:
 
             void fillGridSectionSurfaceCubes(GridSection &gridSection);
 
-            std::vector<GridSection> gridSections;
+            std::vector<std::vector<GridSection>> gridSections;
     };
 }
 

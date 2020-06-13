@@ -15,6 +15,8 @@ namespace World::WorldLogic
 
         for(unsigned int x = 0; x < ProgramInformation::WorldSettings::getWorldLength(); x += gridSectionLength)
         {
+            gridSections.emplace_back();
+
             for(unsigned int z = 0; z < ProgramInformation::WorldSettings::getWorldLength(); z += gridSectionLength)
             {
                 BoundingVolumes::StaticAABB gridSectionAABB
@@ -24,29 +26,25 @@ namespace World::WorldLogic
                             ZRange(z, z + gridSectionLength)
                         };
 
-                gridSections.emplace_back(gridSectionAABB);
+                gridSections.back().emplace_back(gridSectionAABB);
+
+                fillGridSectionSurfaceCubes(gridSections.back().back());
             }
         }
     }
 
-    const std::vector<GridSection> &WorldGenerator::getTerrainData() const
+    const std::vector<std::vector<GridSection>> &WorldGenerator::getTerrainData() const
     {
         return gridSections;
     }
 
     void WorldGenerator::fillGridSectionSurfaceCubes(GridSection &gridSection)
     {
-        const unsigned int minX = gridSection.getSurroundingCube().getXRange().getMin();
-        const unsigned int maxX = gridSection.getSurroundingCube().getXRange().getMax();
-
-        const unsigned int minZ = gridSection.getSurroundingCube().getZRange().getMin();
-        const unsigned int maxZ = gridSection.getSurroundingCube().getZRange().getMax();
-
         const unsigned int cubeLength = ProgramInformation::WorldSettings::getIndividualCubeLength();
 
-        for(unsigned int x = minX; x < maxX; x += cubeLength)
+        for(unsigned int x = 0; x < ProgramInformation::WorldSettings::getGridSectionLength(); x += cubeLength)
         {
-            for(unsigned int z = minZ; z < maxZ; z += cubeLength)
+            for(unsigned int z = 0; z < ProgramInformation::WorldSettings::getGridSectionLength(); z += cubeLength)
             {
                 unsigned int cubeHeight = 0;
 

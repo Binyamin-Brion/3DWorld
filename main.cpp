@@ -14,6 +14,8 @@ int main()
 
     worldGenerator.createWorld();
 
+    commandCentre.uploadWorld(worldGenerator.getTerrainData());
+
     while (!renderWindow.windowShouldClose())
     {
         renderWindow.processInput();

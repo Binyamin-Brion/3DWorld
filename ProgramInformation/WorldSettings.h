@@ -14,6 +14,7 @@ namespace ProgramInformation
             static unsigned int getWorldLength();
             static unsigned int getGridSectionLength();
             static unsigned int getIndividualCubeLength();
+            static unsigned int getSurfaceCubesPerGridSection();
 
         private:
 

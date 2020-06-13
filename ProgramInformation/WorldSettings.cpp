@@ -6,7 +6,7 @@
 
 namespace ProgramInformation
 {
-    unsigned int WorldSettings::worldLength = 3200;
+    unsigned int WorldSettings::worldLength = 6400;
     unsigned int WorldSettings::gridSectionLength = 32;
     unsigned int WorldSettings::individualCubeLength = 2;
 
@@ -23,5 +23,10 @@ namespace ProgramInformation
     unsigned int WorldSettings::getIndividualCubeLength()
     {
         return individualCubeLength;
+    }
+
+    unsigned int WorldSettings::getSurfaceCubesPerGridSection()
+    {
+        return (gridSectionLength / individualCubeLength) * (gridSectionLength / individualCubeLength);
     }
 }

@@ -3,6 +3,13 @@ project(GameProtoType)
 
 set(CMAKE_CXX_STANDARD 17)
 
+find_package(OpenMP)
+if (OPENMP_FOUND)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
+endif()
+
 find_package(glfw3 3.3 REQUIRED)
 find_package(ASSIMP REQUIRED)
 
@@ -33,6 +40,8 @@ add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c Window/RenderWind
                 World/RangeImplementation/YRange.cpp World/RangeImplementation/YRange.h World/RangeImplementation/ZRange.cpp
                 World/RangeImplementation/ZRange.h World/WorldLogic/GridSection.h World/WorldLogic/GridSection.cpp World/WorldLogic/WorldGenerator.cpp
         World/WorldLogic/WorldGenerator.h ProgramInformation/WorldSettings.cpp ProgramInformation/WorldSettings.h Window/Camera/CameraMovement.h
-        Window/Camera/CameraObject.cpp Window/Camera/CameraObject.h)
+        Window/Camera/CameraObject.cpp Window/Camera/CameraObject.h Render/VAO/TerrainVAO.cpp Render/VAO/TerrainVAO.h Render/VBO/BufferData.h Render/VAO/VAOBase.cpp
+        Render/VAO/VAOBase.h ModelLoading/Face.h ModelLoading/Face.cpp ModelLoading/HelperFunctions.cpp ModelLoading/HelperFunctions.h ModelLoading/Mesh.cpp
+        ModelLoading/Mesh.h ModelLoading/Model.cpp ModelLoading/Model.h Render/FrustumCulling/FrustumPlane.h Render/FrustumCulling/FrustumCuller.h Render/FrustumCulling/FrustumCuller.cpp)
 
 target_link_libraries(GameProtoType glfw assimp -lstdc++fs)

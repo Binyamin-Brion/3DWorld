@@ -6,10 +6,18 @@
 #define GAMEPROTOTYPE_COMMANDCENTRE_H
 
 #include "Shaders/InstanceShaderProgram.h"
+#include "VAO/TerrainVAO.h"
+#include "../World/BoundingVolumes/StaticAABB.h"
+#include "FrustumCulling/FrustumCuller.h"
 
 namespace Window::Camera
 {
     class CameraObject;
+}
+
+namespace World::WorldLogic
+{
+    class GridSection;
 }
 
 namespace Render
@@ -31,12 +39,27 @@ namespace Render
              */
             void render(const Window::Camera::CameraObject &camera);
 
+            void uploadWorld(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections);
+
         private:
+
+            [[nodiscard]] std::vector<unsigned int> findVisibleGridSections(const Window::Camera::CameraObject &camera) const;
 
             Shaders::InstanceShaderProgram instanceShaderProgram;
 
             unsigned int vao;
             unsigned int vbo;
+
+            VAO::TerrainVAO terrainVao;
+            FrustumCulling::FrustumCuller frustumCuller;
+
+            struct GridSectionInformation
+            {
+                unsigned int gridSectionID;
+                World::BoundingVolumes::StaticAABB surroundingAABB;
+            };
+
+            std::vector<std::vector<GridSectionInformation>> gridSectionsInformation;
     };
 }
 
