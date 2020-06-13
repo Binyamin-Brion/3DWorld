@@ -2,6 +2,7 @@
 // Created by binybrion on 6/12/20.
 //
 
+#include <chrono>
 #include "WorldGenerator.h"
 #include "../../ProgramInformation/WorldSettings.h"
 
@@ -9,29 +10,48 @@ namespace World::WorldLogic
 {
     void WorldGenerator::createWorld()
     {
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
         // Simply aliases for actual value for readability purposes.
 
         const unsigned int gridSectionLength = ProgramInformation::WorldSettings::getGridSectionLength();
 
         const unsigned int yRangeLimits = std::numeric_limits<unsigned int>::max();
 
-        // Create grid sections and fill them with surface cubes.
-        for(unsigned int x = 0; x < ProgramInformation::WorldSettings::getWorldLength(); x += gridSectionLength)
-        {
-            gridSections.emplace_back();
+        gridSections.clear();
 
-            for(unsigned int z = 0; z < ProgramInformation::WorldSettings::getWorldLength(); z += gridSectionLength)
+        unsigned int numberColumns = ProgramInformation::WorldSettings::getWorldLength() / ProgramInformation::WorldSettings::getGridSectionLength();
+
+        // Insert the required amount of columns before the loop to prevent need for modifying the vector in a parellel
+        // loop, which could lead to data races.
+        gridSections.insert(gridSections.begin(), numberColumns, std::vector<GridSection>{});
+
+        // Create grid sections and fill them with surface cubes.
+
+        #pragma omp parallel for default(shared)
+        for(unsigned int x = 0; x < gridSections.size(); ++x)
+        {
+            // Have a local copy of the "base" grid section ID for the current column for each thread to avoid having
+            // a critical section.
+            unsigned int gridSectionID = x * numberColumns;
+
+            for(unsigned int z = 0; z < gridSections.size(); ++z)
             {
+                unsigned int xOffset = x * ProgramInformation::WorldSettings::getGridSectionLength();
+                unsigned int zOffset = z * ProgramInformation::WorldSettings::getGridSectionLength();
+
                 BoundingVolumes::StaticAABB gridSectionAABB
                         {
-                            XRange(x, x + gridSectionLength),
+                            XRange(xOffset, xOffset + gridSectionLength),
                             YRange(-yRangeLimits, yRangeLimits),
-                            ZRange(z, z + gridSectionLength)
+                            ZRange(zOffset, zOffset + gridSectionLength)
                         };
 
-                gridSections.back().emplace_back(gridSectionAABB);
+                gridSectionID += 1;
 
-                fillGridSectionSurfaceCubes(gridSections.back().back());
+                gridSections[x].emplace_back(gridSectionAABB, gridSectionID);
+
+                fillGridSectionSurfaceCubes(gridSections[x][z]);
             }
         }
     }

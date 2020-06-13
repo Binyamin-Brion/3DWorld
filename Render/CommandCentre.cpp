@@ -6,6 +6,7 @@
 #include <vec3.hpp>
 #include "../Window/Camera/CameraObject.h"
 #include "../World/WorldLogic/GridSection.h"
+#include "../ProgramInformation/WorldSettings.h"
 
 namespace Render
 {
@@ -38,7 +39,7 @@ namespace Render
 
                 for(const auto &surfaceCube : j.getSurfaceCubes())
                 {
-                    instanceTranslations.emplace_back(surfaceCube.getXRange().getMin(), surfaceCube.getYRange().getMin(), surfaceCube.getZRange().getMax());
+                    instanceTranslations.emplace_back(surfaceCube.getXRange().getMin(), surfaceCube.getYRange().getMin(), surfaceCube.getZRange().getMin());
                 }
             }
         }
@@ -48,6 +49,8 @@ namespace Render
 
     std::vector<unsigned int> CommandCentre::findVisibleGridSections(const Window::Camera::CameraObject &camera) const
     {
+        // This bounding box holds all of the world which can be visible from the current camera spot. It is used to reduce
+        // the amount of grid sections to check for visibility.
         World::BoundingVolumes::StaticAABB surroundingAABB
                 {
                     World::XRange(camera.getPosition().x - camera.getDrawDistance(), camera.getPosition().x + camera.getDrawDistance()),
@@ -57,20 +60,38 @@ namespace Render
 
         std::vector<unsigned int> visibleGridSections;
 
-        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-
         // Iterate over the AABB of the cubes in the currently generated parts of the world to determine which ones are visible
         // and thus should be rendered.
 
-        #pragma omp parallel for default(none) shared(surroundingAABB, camera, visibleGridSections)
-        for(unsigned int i = 0; i < gridSectionsInformation.size(); ++i)
-        {
-            std::vector<unsigned int> localVisibleGridSectionID;
+        // Aliases for required variables for readability purposes.
+        unsigned int gridSectionLength = ProgramInformation::WorldSettings::getGridSectionLength();
 
-            for(const auto &gridSection : gridSectionsInformation[i])
+        unsigned int gridSectionsPerWorldLength = ProgramInformation::WorldSettings::getWorldLength() / gridSectionLength;
+
+        // Min value of lowerX is 0, for when the camera is right along the negative edge of the world.
+        // Values to max functions are float but will be truncated when assigning to lowerX.
+        unsigned int lowerX = std::max(surroundingAABB.getXRange().getMin() / gridSectionLength, 0.0f);
+
+        // Max value of higherX is the number of grid sections that can fit in one dimension of the world. std::ceil is used
+        // to ensure that if a part of a grid section is within the cutoff AABB, it is still included in the visibility check.
+        // As with lowerX, arguments to std::min are float, but it does not matter here due to std::ceil.
+        unsigned int higherX = std::min(std::ceil(surroundingAABB.getXRange().getMax() / gridSectionLength), static_cast<float>(gridSectionsPerWorldLength));
+
+        // Same idea as with lowerX and higherX respectively.
+
+        unsigned int lowerZ = std::max(surroundingAABB.getZRange().getMin() / gridSectionLength, 0.0f);
+
+        unsigned int higherZ = std::min(std::ceil(surroundingAABB.getZRange().getMax() / gridSectionLength), static_cast<float>(gridSectionsPerWorldLength));
+
+        #pragma omp parallel for default(shared)
+        for(unsigned int x = lowerX; x < higherX; ++x)
+        {
+            for(unsigned int z = lowerZ; z < higherZ; ++z)
             {
-                bool xRangeOverlap = surroundingAABB.getXRange().overlapRange(gridSection.surroundingAABB.getXRange());
-                bool zRangeOverlap = surroundingAABB.getZRange().overlapRange(gridSection.surroundingAABB.getZRange());
+                const World::BoundingVolumes::StaticAABB gridSectionAABB = gridSectionsInformation[x][z].surroundingAABB;
+                
+                bool xRangeOverlap = surroundingAABB.getXRange().overlapRange(gridSectionAABB.getXRange());
+                bool zRangeOverlap = surroundingAABB.getZRange().overlapRange(gridSectionAABB.getZRange());
 
                 if(!xRangeOverlap && !zRangeOverlap)
                 {
@@ -79,28 +100,28 @@ namespace Render
 
                 glm::vec3 aabbCorners[8];
 
-                aabbCorners[0] = glm::vec3{gridSection.surroundingAABB.getXRange().getMin(), gridSection.surroundingAABB.getYRange().getMin(), gridSection.surroundingAABB.getZRange().getMin()};
+                aabbCorners[0] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMin()};
 
-                aabbCorners[1] = glm::vec3{gridSection.surroundingAABB.getXRange().getMin(), gridSection.surroundingAABB.getYRange().getMax(), gridSection.surroundingAABB.getZRange().getMin()};
+                aabbCorners[1] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMin()};
 
-                aabbCorners[2] = glm::vec3{gridSection.surroundingAABB.getXRange().getMax(), gridSection.surroundingAABB.getYRange().getMax(), gridSection.surroundingAABB.getZRange().getMin()};
+                aabbCorners[2] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMin()};
 
-                aabbCorners[3] = glm::vec3{gridSection.surroundingAABB.getXRange().getMax(), gridSection.surroundingAABB.getYRange().getMin(), gridSection.surroundingAABB.getZRange().getMin()};
+                aabbCorners[3] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMin()};
 
-                aabbCorners[4] = glm::vec3{gridSection.surroundingAABB.getXRange().getMin(), gridSection.surroundingAABB.getYRange().getMin(), gridSection.surroundingAABB.getZRange().getMax()};
+                aabbCorners[4] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMax()};
 
-                aabbCorners[5] = glm::vec3{gridSection.surroundingAABB.getXRange().getMin(), gridSection.surroundingAABB.getYRange().getMax(), gridSection.surroundingAABB.getZRange().getMax()};
+                aabbCorners[5] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMax()};
 
-                aabbCorners[6] = glm::vec3{gridSection.surroundingAABB.getXRange().getMax(), gridSection.surroundingAABB.getYRange().getMax(), gridSection.surroundingAABB.getZRange().getMax()};
+                aabbCorners[6] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMax()};
 
-                aabbCorners[7] = glm::vec3{gridSection.surroundingAABB.getXRange().getMax(), gridSection.surroundingAABB.getYRange().getMin(), gridSection.surroundingAABB.getZRange().getMax()};
+                aabbCorners[7] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMax()};
 
                 // AABB that in the grid section very close to the camera may incorrectly be culled. Fix this by automatically including the grid section
                 // that the camera is located in.
-                if (gridSection.surroundingAABB.checkIntersectionPoint(camera.getPosition()))
+                if (gridSectionAABB.checkIntersectionPoint(camera.getPosition()))
                 {
                     #pragma omp critical
-                    visibleGridSections.push_back(gridSection.gridSectionID);
+                    visibleGridSections.push_back(gridSectionsInformation[x][z].gridSectionID);
 
                     continue;
                 }
@@ -112,17 +133,13 @@ namespace Render
                     if (frustumCuller.pointInFrustum(corner, true))
                     {
                         #pragma omp critical
-                        visibleGridSections.push_back(gridSection.gridSectionID);
+                        visibleGridSections.push_back(gridSectionsInformation[x][z].gridSectionID);
 
                         break;
                     }
                 }
             }
         }
-
-        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-
-        printf("Time Taken: %d \n", std::chrono::duration_cast<std::chrono::milliseconds>(end - begin));
 
         return visibleGridSections;
     }

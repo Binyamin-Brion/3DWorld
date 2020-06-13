@@ -6,9 +6,7 @@
 
 namespace World::WorldLogic
 {
-    unsigned int GridSection::globalGridID = 0;
-
-    GridSection::GridSection(BoundingVolumes::StaticAABB surroundingAABB)
+    GridSection::GridSection(BoundingVolumes::StaticAABB surroundingAABB, unsigned int gridSectionID)
                     :
                         surroundingAABB{surroundingAABB}
     {
@@ -37,9 +35,7 @@ namespace World::WorldLogic
             }
         }
 
-        gridID = globalGridID;
-
-        globalGridID += 1;
+        gridID = gridSectionID;
     }
 
     void GridSection::addSurfaceCube(BoundingVolumes::StaticAABB cubeAABB)

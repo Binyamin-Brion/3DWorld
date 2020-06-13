@@ -7,7 +7,7 @@
 namespace ProgramInformation
 {
     unsigned int WorldSettings::worldLength = 6400;
-    unsigned int WorldSettings::gridSectionLength = 32;
+    unsigned int WorldSettings::gridSectionLength = 16;
     unsigned int WorldSettings::individualCubeLength = 2;
 
     unsigned int WorldSettings::getWorldLength()

@@ -22,8 +22,9 @@ namespace World::WorldLogic
              * Initializes the section of the world with a boundary.
              *
              * @param surroundingAABB boundary for the grid section
+             * @param gridSectionID the ID if this grid section
              */
-            explicit GridSection(BoundingVolumes::StaticAABB surroundingAABB);
+            GridSection(BoundingVolumes::StaticAABB surroundingAABB, unsigned int gridSectionID);
 
             /**
              * Add a surface cube (ie that is visible) to the grid section.
@@ -77,7 +78,6 @@ namespace World::WorldLogic
             std::vector<std::vector<unsigned int>> heightMap;
 
             unsigned int gridID;
-            static unsigned globalGridID;
     };
 }
 
