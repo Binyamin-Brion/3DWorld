@@ -47,9 +47,9 @@ namespace World::WorldLogic
                             ZRange(zOffset, zOffset + gridSectionLength)
                         };
 
-                gridSectionID += 1;
-
                 gridSections[x].emplace_back(gridSectionAABB, gridSectionID);
+
+                gridSectionID += 1;
 
                 fillGridSectionSurfaceCubes(gridSections[x][z]);
             }

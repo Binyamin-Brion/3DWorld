@@ -55,12 +55,14 @@ namespace Render::VAO
         while(iterator != visibleGridSection.end())
         {
             // The start of the adjacent grid section strip.
-            unsigned int previousGridSectionID = *iterator;
+            unsigned int startingGridSectionID = *iterator;
             unsigned int gridSectionCount = 1;
 
             // Count the number of adjacent grid sections.
             while(++iterator != visibleGridSection.end())
             {
+                unsigned int previousGridSectionID = *(iterator - 1);
+
                 // Current grid section is not adjacent to the previous one.
                 if((*iterator) != (previousGridSectionID + 1))
                 {
@@ -70,9 +72,9 @@ namespace Render::VAO
                 gridSectionCount += 1;
             }
 
-            instanceShaderProgram.uploadUInt("baseGridSectionID", previousGridSectionID);
+            instanceShaderProgram.uploadUInt("baseGridSectionID", startingGridSectionID);
 
-            unsigned int elementOffset = previousGridSectionID * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
+            unsigned int elementOffset = startingGridSectionID * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
             unsigned int elementCount = gridSectionCount * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
 
             // Cubes all always being rendered, so the indice count is always 36.

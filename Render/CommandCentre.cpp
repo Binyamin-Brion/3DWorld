@@ -4,6 +4,7 @@
 
 #include "CommandCentre.h"
 #include <vec3.hpp>
+#include <algorithm>
 #include "../Window/Camera/CameraObject.h"
 #include "../World/WorldLogic/GridSection.h"
 #include "../ProgramInformation/WorldSettings.h"
@@ -83,13 +84,13 @@ namespace Render
 
         unsigned int higherZ = std::min(std::ceil(surroundingAABB.getZRange().getMax() / gridSectionLength), static_cast<float>(gridSectionsPerWorldLength));
 
-        #pragma omp parallel for default(shared)
+        #pragma omp parallel for
         for(unsigned int x = lowerX; x < higherX; ++x)
         {
             for(unsigned int z = lowerZ; z < higherZ; ++z)
             {
                 const World::BoundingVolumes::StaticAABB gridSectionAABB = gridSectionsInformation[x][z].surroundingAABB;
-                
+
                 bool xRangeOverlap = surroundingAABB.getXRange().overlapRange(gridSectionAABB.getXRange());
                 bool zRangeOverlap = surroundingAABB.getZRange().overlapRange(gridSectionAABB.getZRange());
 
@@ -121,7 +122,9 @@ namespace Render
                 if (gridSectionAABB.checkIntersectionPoint(camera.getPosition()))
                 {
                     #pragma omp critical
-                    visibleGridSections.push_back(gridSectionsInformation[x][z].gridSectionID);
+                    {
+                        visibleGridSections.push_back(gridSectionsInformation[x][z].gridSectionID);
+                    }
 
                     continue;
                 }
@@ -133,13 +136,17 @@ namespace Render
                     if (frustumCuller.pointInFrustum(corner, true))
                     {
                         #pragma omp critical
-                        visibleGridSections.push_back(gridSectionsInformation[x][z].gridSectionID);
+                        {
+                            visibleGridSections.push_back(gridSectionsInformation[x][z].gridSectionID);
+                        }
 
                         break;
                     }
                 }
             }
         }
+
+        std::sort(visibleGridSections.begin(), visibleGridSections.end());
 
         return visibleGridSections;
     }
