@@ -1,7 +1,8 @@
 #version 440 core
 
 layout (location = 0) in vec3 vertexPosition;
-layout (location = 1) in vec3 instanceTranslation;
+layout (location = 1) in vec2 inTextureCoordinates;
+layout (location = 2) in vec3 instanceTranslation;
 
 uniform mat4 projection;
 uniform mat4 view;
@@ -10,6 +11,8 @@ uniform uint baseGridSectionID;
 uniform uint gridSectionsPerWorldLength;
 uniform uint gridSectionLength;
 uniform uint surfaceCubesPerGridSection;
+
+out vec2 textureCoordinates;
 
 void main()
 {
@@ -25,4 +28,6 @@ void main()
     adjustedVertex.z += (rowOffset * gridSectionLength) + instanceTranslation.z;
 
     gl_Position = projection * view * vec4(adjustedVertex, 1.0);
+
+    textureCoordinates = inTextureCoordinates;
 }

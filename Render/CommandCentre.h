@@ -9,6 +9,7 @@
 #include "VAO/TerrainVAO.h"
 #include "../World/BoundingVolumes/StaticAABB.h"
 #include "FrustumCulling/FrustumCuller.h"
+#include "Textures/TextureManager.h"
 
 namespace Window::Camera
 {
@@ -31,6 +32,8 @@ namespace Render
     {
         public:
 
+            CommandCentre();
+
             /**
              *  Tells all required OpenGL classes to render their data. This function takes care of setting up OpenGL
              *  state before issuing the rendering calls.
@@ -49,6 +52,8 @@ namespace Render
             [[nodiscard]] std::vector<unsigned int> findVisibleGridSections(const Window::Camera::CameraObject &camera) const;
 
             Shaders::InstanceShaderProgram instanceShaderProgram;
+
+            Textures::TextureManager textureManager;
 
             VAO::TerrainVAO terrainVao;
             FrustumCulling::FrustumCuller frustumCuller;

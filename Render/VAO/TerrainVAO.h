@@ -14,6 +14,11 @@ namespace Render::Shaders
     class InstanceShaderProgram;
 }
 
+namespace Render::Textures
+{
+    class TextureManager;
+}
+
 namespace Render::VAO
 {
     /**
@@ -29,7 +34,7 @@ namespace Render::VAO
             /**
              * Initializes the VAO by uploading the required model vertices needed to render the terrain.
              */
-            TerrainVAO();
+            explicit TerrainVAO(Textures::TextureManager &textureManager);
 
             /**
              * Renders the terrain that is within the viewing frustum.

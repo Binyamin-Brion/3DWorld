@@ -10,7 +10,7 @@ namespace Window::Camera
 {
     CameraObject::CameraObject()
     {
-        position = glm::vec3{500.f, 0.f, 5000.f};
+        position = glm::vec3{5.f, 3.f, 5.f};
 
         front = glm::normalize(glm::vec3{0.f, 0.f, -1.f});
 

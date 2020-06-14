@@ -27,6 +27,14 @@ include_directories(${GLM_FOLDER})
 set(GLAD_DIRECTORY ${DEPENDENCIES_FOLDER}/glad)
 include_directories(${GLAD_DIRECTORY})
 
+if(UNIX)
+    set(CMAKE_PREFIX_PATH /home/binybrion/Qt5.9.9/5.9.9/gcc_64)
+    set(GLM_FOLDER /home/binybrion/ProjectSourceDependencies/glm-0.9.9.8/glm)
+endif(UNIX)
+
+find_package(Qt5Widgets REQUIRED)
+include_directories(${Qt5Widgets_INCLUDES})
+
 
 add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c Window/RenderWindow.cpp Window/RenderWindow.h Logging/Logger.cpp
                Logging/Logger.h Logging/LoggerPIMPL.cpp Logging/LoggerPIMPL.h Render/CompileTimeChecks/ValidMappingFlags.h
@@ -42,6 +50,8 @@ add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c Window/RenderWind
         World/WorldLogic/WorldGenerator.h ProgramInformation/WorldSettings.cpp ProgramInformation/WorldSettings.h Window/Camera/CameraMovement.h
         Window/Camera/CameraObject.cpp Window/Camera/CameraObject.h Render/VAO/TerrainVAO.cpp Render/VAO/TerrainVAO.h Render/VBO/BufferData.h Render/VAO/VAOBase.cpp
         Render/VAO/VAOBase.h ModelLoading/Face.h ModelLoading/Face.cpp ModelLoading/HelperFunctions.cpp ModelLoading/HelperFunctions.h ModelLoading/Mesh.cpp
-        ModelLoading/Mesh.h ModelLoading/Model.cpp ModelLoading/Model.h Render/FrustumCulling/FrustumPlane.h Render/FrustumCulling/FrustumCuller.h Render/FrustumCulling/FrustumCuller.cpp)
+        ModelLoading/Mesh.h ModelLoading/Model.cpp ModelLoading/Model.h Render/FrustumCulling/FrustumPlane.h Render/FrustumCulling/FrustumCuller.h Render/FrustumCulling/FrustumCuller.cpp
+        Render/Textures/CompressFactor.h Render/Textures/TextureBank.cpp Render/Textures/TextureBank.h Render/Textures/TextureID.h Render/Textures/TextureManager.cpp Render/Textures/TextureManager.h
+        Render/DataStructures/MeshRenderInformation.h Render/DataStructures/ModelRenderInformation.h)
 
-target_link_libraries(GameProtoType glfw assimp -lstdc++fs)
+target_link_libraries(GameProtoType glfw assimp ${Qt5Widgets_LIBRARIES} -lstdc++fs)

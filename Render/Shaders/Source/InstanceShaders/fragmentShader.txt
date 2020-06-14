@@ -1,8 +1,23 @@
 #version 440 core
 
+in vec2 textureCoordinates;
+
+uniform int textureSamplerIndex;
+uniform int textureSamplerOffset;
+
+uniform sampler2DArray textures_512x512;
+
 out vec4 FragColor;
 
 void main()
 {
-    FragColor = vec4(0.5, 0.0, 0.0, 1.0);
+    switch(textureSamplerIndex)
+    {
+        case 0: // 512x512 texture array
+            FragColor = texture(textures_512x512, vec3(textureCoordinates, textureSamplerOffset));
+            break;
+
+        default:
+                FragColor = vec4(0.5, 0.0, 0.0, 1.0);
+    }
 }

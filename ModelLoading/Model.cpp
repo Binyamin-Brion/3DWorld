@@ -116,7 +116,7 @@ namespace ModelLoading
 
             for(unsigned int j = 0; j < face.mNumIndices; ++j)
             {
-                indices.push_back(face.mIndices[j] + numberVerticesLoaded);
+                indices.push_back(face.mIndices[j]);
             }
         }
 
@@ -142,9 +142,6 @@ namespace ModelLoading
 
             meshes.push_back(loadedMesh);
         }
-
-        // Ensure that subsequent meshes' indices refer to its associated mesh vertices.
-        numberVerticesLoaded += vertices.size();
     }
 
     void Model::processNode(const aiNode *const node, const aiScene *const scene)

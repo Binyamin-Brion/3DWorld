@@ -9,35 +9,16 @@
 
 namespace Render::VAO
 {
-    TerrainVAO::TerrainVAO()
+    TerrainVAO::TerrainVAO(Textures::TextureManager &textureManager)
     {
-        ModelLoading::Model terrainCube{getModelAssetFolder().append("modelCube.obj").c_str()};
-
         bind();
 
-        cubeVertices.bind();
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
-        glEnableVertexAttribArray(0);
+        loadModel(textureManager, getModelAssetFolder().append("surfaceCubeGrass.obj").c_str());
 
         instanceTranslations.bind();
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
-        glVertexAttribDivisor(1, 1);
-        glEnableVertexAttribArray(1);
-
-        // Upload cube render data to appropriate buffers
-
-        std::vector<glm::vec3> modelVertices;
-        std::vector<unsigned int> modelIndices;
-
-        for(const auto &i : terrainCube.getMeshes())
-        {
-            modelVertices.insert(modelVertices.end(), i.getVertices().begin(), i.getVertices().end());
-
-            modelIndices.insert(modelIndices.end(), i.getIndices().begin(), i.getIndices().end());
-        }
-
-        cubeVertices.uploadData(modelVertices);
-        cubeIndices.uploadData(modelIndices);
+        glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
+        glVertexAttribDivisor(2, 1);
+        glEnableVertexAttribArray(2);
     }
 
     void TerrainVAO::render(Shaders::InstanceShaderProgram &instanceShaderProgram, const std::vector<unsigned int> &visibleGridSection)
@@ -77,8 +58,19 @@ namespace Render::VAO
             unsigned int elementOffset = startingGridSectionID * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
             unsigned int elementCount = gridSectionCount * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
 
-            // Cubes all always being rendered, so the indice count is always 36.
-            glDrawElementsInstancedBaseInstance(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr, elementCount, elementOffset);
+            // Iterate through all of the models that make up the terrain and render them.
+            for(const auto &modelData : modelRenderingInformation)
+            {
+                for(const auto &meshData : modelData.meshes)
+                {
+                    instanceShaderProgram.uploadInt("textureSamplerIndex", meshData.textureId.textureID);
+                    instanceShaderProgram.uploadInt("textureSamplerOffset", meshData.textureId.offset);
+
+                    void* indiceOffsetPtr = (void*)(meshData.indiceOffset * sizeof(unsigned int));
+
+                    glDrawElementsInstancedBaseVertexBaseInstance(GL_TRIANGLES, meshData.indicesCount, GL_UNSIGNED_INT, indiceOffsetPtr, elementCount, meshData.baseVertex, elementOffset);
+                }
+            }
         }
     }
 

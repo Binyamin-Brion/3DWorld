@@ -11,6 +11,13 @@
 
 namespace Render
 {
+    CommandCentre::CommandCentre()
+                    :
+                        terrainVao{textureManager}
+    {
+
+    }
+
     void CommandCentre::render(const Window::Camera::CameraObject &camera)
     {
         frustumCuller.updatePlaneCoefficients(camera.getProjectionMatrix() * camera.getViewMatrix());

@@ -6,6 +6,16 @@
 #define GAMEPROTOTYPE_VAOBASE_H
 
 #include <experimental/filesystem>
+#include "../DataStructures/ModelRenderInformation.h"
+#include "../VBO/BufferData.h"
+
+#include <vec3.hpp>
+#include <vec2.hpp>
+
+namespace Render::Textures
+{
+    class TextureManager;
+}
 
 namespace Render::VAO
 {
@@ -38,7 +48,29 @@ namespace Render::VAO
              */
             std::experimental::filesystem::path getModelAssetFolder();
 
+            /**
+             * Loads the model at the given location and stores the model information into the appropriate buffers within
+             * this class.
+             *
+             * @param textureManager that holds all of the textures used in the program
+             * @param modelLocation location on the file disk of the model file
+             */
+            void loadModel(Textures::TextureManager &textureManager, const std::string &modelLocation);
+
+            // All of the rendering data all of the models loaded.
+            std::vector<DataStructures::ModelRenderingInformation> modelRenderingInformation;
+
+        private:
+
+            // TODO: Depending on future VAOs created, these may have to be protected, not private.
+
             unsigned vao;
+            VBO::BufferData<glm::vec3, GL_ARRAY_BUFFER, GL_STATIC_DRAW> vertices;
+            VBO::BufferData<unsigned int, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW> indices;
+            VBO::BufferData<glm::vec2, GL_ARRAY_BUFFER, GL_STATIC_DRAW> textureCoordinates;
+
+            unsigned int verticesLoaded = 0;
+            unsigned int indicesLoaded = 0;
     };
 }
 

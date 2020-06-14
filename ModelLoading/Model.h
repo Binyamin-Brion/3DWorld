@@ -74,10 +74,6 @@ namespace ModelLoading
             std::vector<Mesh> meshes;
             ::World::BoundingVolumes::StaticAABB boundingAABB;
             std::vector<::World::BoundingVolumes::StaticAABB> meshBoundingVolumes;
-
-            // This is to offset the indices of the meshes loaded after a different mesh. This ensures that a mesh does
-            // not refer to vertices loaded by an earlier mesh.
-            unsigned int numberVerticesLoaded = 0;
     };
 }
 
