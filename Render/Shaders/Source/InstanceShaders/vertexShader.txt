@@ -25,6 +25,7 @@ void main()
     vec3 adjustedVertex = vertexPosition;
 
     adjustedVertex.x += columnOffset * gridSectionLength + instanceTranslation.x;
+    adjustedVertex.y += instanceTranslation.y;
     adjustedVertex.z += (rowOffset * gridSectionLength) + instanceTranslation.z;
 
     gl_Position = projection * view * vec4(adjustedVertex, 1.0);

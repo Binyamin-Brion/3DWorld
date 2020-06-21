@@ -8,6 +8,7 @@
 #include "../Window/Camera/CameraObject.h"
 #include "../World/WorldLogic/GridSection.h"
 #include "../ProgramInformation/WorldSettings.h"
+#include "DataStructures/GridSectionInstanceRange.h"
 
 namespace Render
 {
@@ -34,6 +35,7 @@ namespace Render
     void CommandCentre::uploadWorld(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections)
     {
         std::vector<glm::vec3> instanceTranslations;
+        std::vector<DataStructures::GridSectionInstanceRange> gridSectionsInstanceRange;
 
         for(const auto &i : gridSections)
         {
@@ -45,6 +47,10 @@ namespace Render
 
                 gridSectionsInformation.back().push_back(gridSectionInformation);
 
+                // Store the instance count for each grid section.
+                gridSectionsInstanceRange.push_back(DataStructures::GridSectionInstanceRange{j.getGridSectionID(), static_cast<unsigned int>(j.getSurfaceCubes().size())});
+
+                // Create translations from the cube's AABB.
                 for(const auto &surfaceCube : j.getSurfaceCubes())
                 {
                     instanceTranslations.emplace_back(surfaceCube.getXRange().getMin(), surfaceCube.getYRange().getMin(), surfaceCube.getZRange().getMin());
@@ -52,7 +58,7 @@ namespace Render
             }
         }
 
-        terrainVao.uploadInstanceTranslations(instanceTranslations);
+        terrainVao.uploadInstanceTranslations(instanceTranslations, gridSectionsInstanceRange);
     }
 
     std::vector<unsigned int> CommandCentre::findVisibleGridSections(const Window::Camera::CameraObject &camera) const
@@ -91,7 +97,7 @@ namespace Render
 
         unsigned int higherZ = std::min(std::ceil(surroundingAABB.getZRange().getMax() / gridSectionLength), static_cast<float>(gridSectionsPerWorldLength));
 
-        #pragma omp parallel for
+        #pragma omp parallel for default(none) shared(lowerX, higherX, lowerZ, higherZ, surroundingAABB, camera, visibleGridSections)
         for(unsigned int x = lowerX; x < higherX; ++x)
         {
             for(unsigned int z = lowerZ; z < higherZ; ++z)

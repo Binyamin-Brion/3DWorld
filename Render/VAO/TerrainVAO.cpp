@@ -13,7 +13,9 @@ namespace Render::VAO
     {
         bind();
 
-        loadModel(textureManager, getModelAssetFolder().append("surfaceCubeGrass.obj").c_str());
+        loadModel(textureManager,
+                  {getModelAssetFolder().append("surfaceCubeGrass.obj")
+                  });
 
         instanceTranslations.bind();
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), nullptr);
@@ -55,27 +57,49 @@ namespace Render::VAO
 
             instanceShaderProgram.uploadUInt("baseGridSectionID", startingGridSectionID);
 
-            unsigned int elementOffset = startingGridSectionID * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
-            unsigned int elementCount = gridSectionCount * ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection();
-
             // Iterate through all of the models that make up the terrain and render them.
-            for(const auto &modelData : modelRenderingInformation)
+            for(const auto &model : renderStructure.getSortedModels())
             {
-                for(const auto &meshData : modelData.meshes)
+                unsigned int elementOffset = model.gridSectionRenderData[startingGridSectionID].instanceOffset;
+
+                // Find how many instances of the current model to render, given the visible grid sections.
+                unsigned int elementCount = 0;
+
+                for(unsigned int i = 0; i < gridSectionCount; ++i)
                 {
-                    instanceShaderProgram.uploadInt("textureSamplerIndex", meshData.textureId.textureID);
-                    instanceShaderProgram.uploadInt("textureSamplerOffset", meshData.textureId.offset);
+                    elementCount += model.gridSectionRenderData[startingGridSectionID + i].instanceCount;
+                }
 
-                    void* indiceOffsetPtr = (void*)(meshData.indiceOffset * sizeof(unsigned int));
+                // No instances to render; skip loop iteration to avoid draw calls.
+                if(elementCount == 0)
+                {
+                    continue;
+                }
 
-                    glDrawElementsInstancedBaseVertexBaseInstance(GL_TRIANGLES, meshData.indicesCount, GL_UNSIGNED_INT, indiceOffsetPtr, elementCount, meshData.baseVertex, elementOffset);
+                // Draw all of the meshes that make up a model.
+                for(const auto &mesh : model.modelRenderingInformation.meshes)
+                {
+                    instanceShaderProgram.uploadInt("textureSamplerIndex", mesh.textureId.textureID);
+                    instanceShaderProgram.uploadInt("textureSamplerOffset", mesh.textureId.offset);
+
+                    void* indiceOffsetPtr = (void*)(mesh.indiceOffset * sizeof(unsigned int));
+
+                    glDrawElementsInstancedBaseVertexBaseInstance(GL_TRIANGLES, mesh.indicesCount, GL_UNSIGNED_INT, indiceOffsetPtr, elementCount, mesh.baseVertex, elementOffset);
                 }
             }
         }
     }
 
-    void TerrainVAO::uploadInstanceTranslations(const std::vector<glm::vec3> &translations)
+    void TerrainVAO::uploadInstanceTranslations(const std::vector<glm::vec3> &translations, const std::vector<DataStructures::GridSectionInstanceRange> &gridSectionsInformation)
     {
         instanceTranslations.uploadData(translations);
+
+        for(const auto &i : modelRenderingInformation)
+        {
+            if(i.modelLocation == getModelAssetFolder().append("surfaceCubeGrass.obj").c_str())
+            {
+                renderStructure.addModel(i, gridSectionsInformation);
+            }
+        }
     }
 }

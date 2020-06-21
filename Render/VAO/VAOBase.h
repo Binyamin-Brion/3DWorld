@@ -8,6 +8,7 @@
 #include <experimental/filesystem>
 #include "../DataStructures/ModelRenderInformation.h"
 #include "../VBO/BufferData.h"
+#include "../DataStructures/RenderStructure.h"
 
 #include <vec3.hpp>
 #include <vec2.hpp>
@@ -53,12 +54,14 @@ namespace Render::VAO
              * this class.
              *
              * @param textureManager that holds all of the textures used in the program
-             * @param modelLocation location on the file disk of the model file
+             * @param modelLocation vector of locations on the file disk of the model file
              */
-            void loadModel(Textures::TextureManager &textureManager, const std::string &modelLocation);
+            void loadModel(Textures::TextureManager &textureManager, const std::vector<std::string> &modelLocations);
 
             // All of the rendering data all of the models loaded.
             std::vector<DataStructures::ModelRenderingInformation> modelRenderingInformation;
+
+            DataStructures::RenderStructure renderStructure;
 
         private:
 

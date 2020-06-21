@@ -9,6 +9,11 @@
 #include "../VBO/BufferData.h"
 #include "VAOBase.h"
 
+namespace Render::DataStructures
+{
+    class GridSectionInstanceRange;
+}
+
 namespace Render::Shaders
 {
     class InstanceShaderProgram;
@@ -50,8 +55,9 @@ namespace Render::VAO
              * Store the translations required for rendering in the buffer.
              *
              * @param translations of the cubes to render
+             * @param gridSectionsInformation information about the number of model instances for each grid section
              */
-            void uploadInstanceTranslations(const std::vector<glm::vec3> &translations);
+            void uploadInstanceTranslations(const std::vector<glm::vec3> &translations, const std::vector<DataStructures::GridSectionInstanceRange> &gridSectionsInformation);
 
         private:
 
