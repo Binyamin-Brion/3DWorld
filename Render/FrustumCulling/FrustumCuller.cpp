@@ -11,35 +11,14 @@ namespace Render::FrustumCulling
     {
         matrix = glm::transpose(matrix);
 
-        planeCoefficients[Left] = glm::vec4{ matrix[3][0] + matrix[0][0],
-                                             matrix[3][1] + matrix[0][1],
-                                             matrix[3][2] + matrix [0][2],
-                                             matrix[3][3] + matrix[0][3]};
+        planeCoefficients[Left] = matrix[3] + matrix[0];
+        planeCoefficients[Right] = matrix[3] - matrix[0];
 
-        planeCoefficients[Right] = glm::vec4{ matrix[3][0] - matrix[0][0],
-                                             matrix[3][1] - matrix[0][1],
-                                             matrix[3][2] - matrix [0][2],
-                                             matrix[3][3] - matrix[0][3]};
+        planeCoefficients[Bottom] = matrix[3] + matrix[1];
+        planeCoefficients[Top] = matrix[3] - matrix[1];
 
-        planeCoefficients[Bottom] = glm::vec4{ matrix[3][0] + matrix[1][0],
-                                             matrix[3][1] + matrix[1][1],
-                                             matrix[3][2] + matrix [1][2],
-                                             matrix[3][3] + matrix[1][3]};
-
-        planeCoefficients[Top] = glm::vec4{ matrix[3][0] - matrix[1][0],
-                                              matrix[3][1] - matrix[1][1],
-                                              matrix[3][2] - matrix [1][2],
-                                              matrix[3][3] - matrix[1][3]};
-
-        planeCoefficients[Near] = glm::vec4{ matrix[3][0] + matrix[2][0],
-                                               matrix[3][1] + matrix[2][1],
-                                               matrix[3][2] + matrix [2][2],
-                                               matrix[3][3] + matrix[2][3]};
-
-        planeCoefficients[Far] = glm::vec4{ matrix[3][0] - matrix[2][0],
-                                            matrix[3][1] - matrix[2][1],
-                                            matrix[3][2] - matrix [2][2],
-                                            matrix[3][3] - matrix[2][3]};
+        planeCoefficients[Near] = matrix[3] + matrix[2];
+        planeCoefficients[Far] = matrix[3] - matrix[2];
 
         for(auto &i : planeCoefficients)
         {
@@ -47,32 +26,24 @@ namespace Render::FrustumCulling
         }
     }
 
-    bool FrustumCuller::pointInFrustum(const glm::vec3 &point, bool testingGridSection) const
+    bool FrustumCuller::pointInFrustum(const glm::vec3 &point) const
     {
         int currentPlaneIndex = -1;
+
+        bool intersectionResult = false;
 
         for(const auto &i : planeCoefficients)
         {
             currentPlaneIndex += 1;
-
-            // Since the grid sections y-dimensions expand infinitely, they will always fail the top and bottom
-            // plane check. Thus they are excluded.
-            if(testingGridSection && (currentPlaneIndex == Top || currentPlaneIndex == Bottom))
-            {
-                continue;
-            }
 
             float distanceToPlane = i.x * point.x +
                                     i.y * point.y +
                                     i.z * point.z +
                                     i.w;
 
-            if(distanceToPlane < 0)
-            {
-                return false;
-            }
+            intersectionResult |= (distanceToPlane > 0);
         }
 
-        return true;
+        return intersectionResult;
     }
 }

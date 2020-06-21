@@ -37,6 +37,13 @@ namespace ProgramInformation
             static unsigned int getIndividualCubeLength();
 
             /**
+             * Get the maximum height of any cube within the world.
+             *
+             * @return cube's maximum possible height
+             */
+            static unsigned int getMaxHeight();
+
+            /**
              * Get the number of surface cubes within a grid section.
              *
              * @return number of surface cubes within a grid section
@@ -47,6 +54,7 @@ namespace ProgramInformation
 
             static unsigned int worldLength;
             static unsigned int gridSectionLength;
+            static unsigned int maxHeight;
             static unsigned int individualCubeLength;
     };
 }

@@ -35,8 +35,10 @@ endif(UNIX)
 find_package(Qt5Widgets REQUIRED)
 include_directories(${Qt5Widgets_INCLUDES})
 
+set(FAST_NOISE_FOLDER ${DEPENDENCIES_FOLDER}/FastNoise)
+include_directories(${FAST_NOISE_FOLDER})
 
-add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c Window/RenderWindow.cpp Window/RenderWindow.h Logging/Logger.cpp
+add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c ${FAST_NOISE_FOLDER}/FastNoise.cpp Window/RenderWindow.cpp Window/RenderWindow.h Logging/Logger.cpp
                Logging/Logger.h Logging/LoggerPIMPL.cpp Logging/LoggerPIMPL.h Render/CompileTimeChecks/ValidMappingFlags.h
                Render/CompileTimeChecks/ValidBufferTarget.h Render/CompileTimeChecks/ValidBufferFlags.h
                Render/VBO/BufferStorage.h Render/Shaders/ShaderProgramBase.cpp Render/Shaders/ShaderProgramBase.h

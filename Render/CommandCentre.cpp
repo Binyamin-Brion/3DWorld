@@ -97,7 +97,10 @@ namespace Render
 
         unsigned int higherZ = std::min(std::ceil(surroundingAABB.getZRange().getMax() / gridSectionLength), static_cast<float>(gridSectionsPerWorldLength));
 
-        #pragma omp parallel for default(none) shared(lowerX, higherX, lowerZ, higherZ, surroundingAABB, camera, visibleGridSections)
+        // Only two threads are used as when adding more thread, the performance becomes more unpredictable (probably due to more synchronisation among
+        // critical sections, and the fact that there isn't that much work to do here), which can elads to stuttering, To be honest, even two threads
+        // may be too much.
+        #pragma omp parallel for default(none) shared(lowerX, higherX, lowerZ, higherZ, surroundingAABB, camera, visibleGridSections) num_threads(2)
         for(unsigned int x = lowerX; x < higherX; ++x)
         {
             for(unsigned int z = lowerZ; z < higherZ; ++z)
@@ -146,7 +149,7 @@ namespace Render
 
                 for (const auto &corner : aabbCorners)
                 {
-                    if (frustumCuller.pointInFrustum(corner, true))
+                    if (frustumCuller.pointInFrustum(corner))
                     {
                         #pragma omp critical
                         {

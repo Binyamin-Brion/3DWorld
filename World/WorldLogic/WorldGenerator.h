@@ -7,6 +7,8 @@
 
 #include "GridSection.h"
 
+class FastNoise;
+
 namespace World::WorldLogic
 {
     /**
@@ -36,10 +38,12 @@ namespace World::WorldLogic
              *
              * @param gridSection in which to place surface cubes
              */
-            void fillGridSectionSurfaceCubes(GridSection &gridSection);
+            void fillGridSectionSurfaceCubes(GridSection &gridSection, FastNoise &perlinNoise);
 
             // Every index into grid sections represents a columns, and the vector of that column represents rows in the world.
             std::vector<std::vector<GridSection>> gridSections;
+
+            std::vector<std::vector<unsigned char>> heightMap;
     };
 }
 

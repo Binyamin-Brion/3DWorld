@@ -30,10 +30,9 @@ namespace Render::FrustumCulling
              * Determines if a point is in the camera's frustum, and is thus visible.
              *
              * @param point to check for visibility
-             * @param testingGridSection true if a grid section is being tested. See FrustumCuller.cpp for details
              * @return true if the point is visible
              */
-            [[nodiscard]] bool pointInFrustum(const glm::vec3 &point, bool testingGridSection) const;
+            [[nodiscard]] bool pointInFrustum(const glm::vec3 &point) const;
 
         private:
 

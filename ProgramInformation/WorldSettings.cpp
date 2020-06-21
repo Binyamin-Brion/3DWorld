@@ -9,6 +9,7 @@ namespace ProgramInformation
     unsigned int WorldSettings::worldLength = 3200;
     unsigned int WorldSettings::gridSectionLength = 16;
     unsigned int WorldSettings::individualCubeLength = 2;
+    unsigned int WorldSettings::maxHeight = 64;
 
     unsigned int WorldSettings::getWorldLength()
     {
@@ -23,6 +24,11 @@ namespace ProgramInformation
     unsigned int WorldSettings::getIndividualCubeLength()
     {
         return individualCubeLength;
+    }
+
+    unsigned int WorldSettings::getMaxHeight()
+    {
+        return maxHeight;
     }
 
     unsigned int WorldSettings::getSurfaceCubesPerGridSection()
