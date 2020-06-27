@@ -24,12 +24,7 @@ namespace Render::VAO
     }
 
     void TerrainVAO::render(Shaders::InstanceShaderProgram &instanceShaderProgram, const std::vector<unsigned int> &visibleGridSection)
-    {
-        instanceShaderProgram.uploadUInt("surfaceCubesPerGridSection", ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection());
-        instanceShaderProgram.uploadUInt("gridSectionsPerWorldLength", ProgramInformation::WorldSettings::getWorldLength() / ProgramInformation::WorldSettings::getGridSectionLength());
-        instanceShaderProgram.uploadUInt("gridSectionLength",  ProgramInformation::WorldSettings::getGridSectionLength());
-        instanceShaderProgram.uploadUInt("surfaceCubesPerGridSection", ProgramInformation::WorldSettings::getSurfaceCubesPerGridSection());
-
+    {printf("%lu \n", visibleGridSection.size());
         bind();
 
         auto iterator = visibleGridSection.begin();
@@ -54,8 +49,6 @@ namespace Render::VAO
 
                 gridSectionCount += 1;
             }
-
-            instanceShaderProgram.uploadUInt("baseGridSectionID", startingGridSectionID);
 
             // Iterate through all of the models that make up the terrain and render them.
             for(const auto &model : renderStructure.getSortedModels())

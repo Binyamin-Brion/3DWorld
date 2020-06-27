@@ -115,23 +115,15 @@ namespace Render
                     break;
                 }
 
-                glm::vec3 aabbCorners[8];
+                glm::vec3 aabbCorners[4];
 
                 aabbCorners[0] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMin()};
 
-                aabbCorners[1] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMin()};
+                aabbCorners[1] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMax()};
 
-                aabbCorners[2] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMin()};
+                aabbCorners[2] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMin()};
 
-                aabbCorners[3] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMin()};
-
-                aabbCorners[4] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMax()};
-
-                aabbCorners[5] = glm::vec3{gridSectionAABB.getXRange().getMin(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMax()};
-
-                aabbCorners[6] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMax(), gridSectionAABB.getZRange().getMax()};
-
-                aabbCorners[7] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMax()};
+                aabbCorners[3] = glm::vec3{gridSectionAABB.getXRange().getMax(), gridSectionAABB.getYRange().getMin(), gridSectionAABB.getZRange().getMax()};
 
                 // AABB that in the grid section very close to the camera may incorrectly be culled. Fix this by automatically including the grid section
                 // that the camera is located in.
@@ -149,7 +141,7 @@ namespace Render
 
                 for (const auto &corner : aabbCorners)
                 {
-                    if (frustumCuller.pointInFrustum(corner))
+                    if (frustumCuller.pointInFrustumNoHeight(corner, camera.getPosition(), camera.getFront()))
                     {
                         #pragma omp critical
                         {

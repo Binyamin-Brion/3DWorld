@@ -30,8 +30,6 @@ namespace Render::FrustumCulling
     {
         int currentPlaneIndex = -1;
 
-        bool intersectionResult = false;
-
         for(const auto &i : planeCoefficients)
         {
             currentPlaneIndex += 1;
@@ -41,9 +39,23 @@ namespace Render::FrustumCulling
                                     i.z * point.z +
                                     i.w;
 
-            intersectionResult |= (distanceToPlane > 0);
+            if(distanceToPlane < 0)
+            {
+                return false;
+            }
         }
 
-        return intersectionResult;
+        return true;
+    }
+
+    bool FrustumCuller::pointInFrustumNoHeight(glm::vec3 point, const glm::vec3 &cameraPos, const glm::vec3 &cameraFront) const
+    {
+        // Find what the height of the point should be given its location from the camera. Doing so ensures that the y-component
+        // is in view of the frustum, making it effectively redundant (which is required when calling this function).
+        float distanceToCamera = glm::length(glm::vec2{point.x - cameraPos.x, point.z - cameraPos.z});
+
+        point.y = (cameraPos + cameraFront * distanceToCamera).y ;
+
+        return pointInFrustum(point);
     }
 }

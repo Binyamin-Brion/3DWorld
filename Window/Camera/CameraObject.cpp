@@ -9,23 +9,22 @@
 namespace Window::Camera
 {
     CameraObject::CameraObject()
+                    :
+                        maxAngleLookUp{89.0f},
+                        maxAngleLookDown{-30.0f},
+                        position{750.f, 95.f, 750.f},
+                        front{0.f, 0.f, -1.0f},
+                        up{0.0f, 1.0f, 0.0f},
+                        yaw{-90.0f},
+                        pitch{0.0f},
+                        mouseSensitivity{0.1f},
+                        movementSpeed{0.5f},
+                        firstRotation{true},
+                        drawDistance{384.0f},
+                        view{glm::lookAt(position, position + front, up)}
+
     {
-        position = glm::vec3{5.f, 75.f, 5.f};
 
-        front = glm::normalize(glm::vec3{0.f, 0.f, -1.f});
-
-        up = glm::vec3{0.0f, 1.0f, 0.0f};
-
-        view = glm::lookAt(position, position + front, up);
-
-        yaw = -90.0f;
-        pitch = 0.0f;
-        mouseSensitivity = 0.1f;
-        movementSpeed = 0.50;
-
-        firstRotation = true;
-
-        drawDistance = DEFAULT_DRAW_DISTANCE;
     }
 
     float CameraObject::getDrawDistance() const
@@ -122,14 +121,14 @@ printf("Pos: %f, %f, %f \n", position.x, position.y, position.z);
         pitch += yMouseOffset;
 
         // Prevent issues that occur when the pitch is 90 degrees or -90 degrees.
-        if (pitch > 89.0f)
+        if (pitch > maxAngleLookUp)
         {
-            pitch = 89.0f;
+            pitch = maxAngleLookUp;
         }
 
-        if (pitch < -89.0f)
+        if (pitch < maxAngleLookDown)
         {
-            pitch = -89.0f;
+            pitch = maxAngleLookDown;
         }
 
         glm::vec3 newCameraFront;

@@ -34,6 +34,17 @@ namespace Render::FrustumCulling
              */
             [[nodiscard]] bool pointInFrustum(const glm::vec3 &point) const;
 
+            /**
+             * Determines if a point is in the camera's frustum based off of the x-z plane; ie the height of the point
+             * is not considered.
+             *
+             * @param point to check for visibility
+             * @param cameraPos position of the camera
+             * @param cameraFront the direction the camera is looking at
+             * @return true if the point is visible
+             */
+            [[nodiscard]] bool pointInFrustumNoHeight(glm::vec3 point, const glm::vec3 &cameraPos, const glm::vec3 &cameraFront) const;
+
         private:
 
             // Holds the equations of the frustum planes

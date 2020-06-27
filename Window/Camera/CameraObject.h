@@ -151,7 +151,8 @@ namespace Window::Camera
             float lastRotationX;
             float lastRotationY;
 
-            const float DEFAULT_DRAW_DISTANCE = 384.0f;
+            float maxAngleLookDown;
+            float maxAngleLookUp;
 
             float drawDistance;
 

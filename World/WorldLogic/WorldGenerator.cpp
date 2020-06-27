@@ -71,11 +71,109 @@ namespace World::WorldLogic
                 fillGridSectionSurfaceCubes(gridSections[x][z], perlinNoise);
             }
         }
+
+        fillGaps();
     }
 
     const std::vector<std::vector<GridSection>> &WorldGenerator::getTerrainData() const
     {
         return gridSections;
+    }
+
+    // Beginning of private functions
+
+    unsigned char WorldGenerator::getHeightEast(unsigned int xPos, unsigned int zPos) const
+    {
+        return heightMap[xPos + 1][zPos];
+    }
+
+    unsigned char WorldGenerator::getHeightNorth(unsigned int xPos, unsigned int zPos) const
+    {
+        return heightMap[xPos][zPos - 1];
+    }
+
+    unsigned char WorldGenerator::getHeightSouth(unsigned int xPos, unsigned int zPos) const
+    {
+        return heightMap[xPos][zPos + 1];
+    }
+
+    unsigned char WorldGenerator::getHeightWest(unsigned int xPos, unsigned int zPos) const
+    {
+        return heightMap[xPos - 1][zPos];
+    }
+
+    void WorldGenerator::fillGaps()
+    {
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+        const unsigned int cubeLength = ProgramInformation::WorldSettings::getIndividualCubeLength();
+
+        #pragma omp parallel for default(none)
+        for (unsigned int xIndex = 0; xIndex < heightMap.size(); ++xIndex)
+        {
+            for (unsigned int zIndex = 0; zIndex < heightMap[xIndex].size(); ++zIndex)
+            {
+                // Get the height of the neighbour cubes.
+
+                unsigned char heightNorth = heightMap[xIndex][zIndex];
+                unsigned char heightSouth = heightMap[xIndex][zIndex];
+                unsigned char heightEast = heightMap[xIndex][zIndex];
+                unsigned char heightWest = heightMap[xIndex][zIndex];
+
+                if (zIndex != 0)
+                {
+                    heightNorth = getHeightNorth(xIndex, zIndex);
+                }
+
+                if (zIndex != (heightMap[xIndex].size() - 1))
+                {
+                    heightSouth = getHeightSouth(xIndex, zIndex);
+                }
+
+                if (xIndex != 0)
+                {
+                    heightWest = getHeightWest(xIndex, zIndex);
+                }
+
+                if (xIndex != (heightMap.size() - 1))
+                {
+                    heightEast = getHeightEast(xIndex, zIndex);
+                }
+
+                // Find the lowest neighbour cube height.
+
+                unsigned char lowestHeight_North_South = std::min(heightNorth, heightSouth);
+                unsigned char lowestHeight_West_East = std::min(heightWest, heightEast);
+                unsigned char lowestNeighbourHeight = std::min(lowestHeight_North_South, lowestHeight_West_East);
+
+                // This is the height that the current cube's height will be compared against.
+                unsigned int gapFillingHeight = lowestNeighbourHeight + ProgramInformation::WorldSettings::getIndividualCubeLength();
+
+                unsigned int currentHeight = heightMap[xIndex][zIndex];
+
+                // Keep adding cubes to fill the gap until there is no longer a gap.
+                while (currentHeight > gapFillingHeight)
+                {
+                    unsigned int gridSectionIndex_X = xIndex * cubeLength / ProgramInformation::WorldSettings::getGridSectionLength();
+                    unsigned int gridSectionIndex_Z = zIndex * cubeLength / ProgramInformation::WorldSettings::getGridSectionLength();
+
+                    BoundingVolumes::StaticAABB gapFillingCubeAABB
+                            {
+                                    XRange(xIndex * cubeLength, xIndex * cubeLength + cubeLength),
+                                    YRange(currentHeight - cubeLength, currentHeight),
+                                    ZRange(zIndex * cubeLength, zIndex * cubeLength + cubeLength)
+                            };
+
+                    // More than one thread might access the same grid section!
+                    #pragma omp critical
+                    {
+                        gridSections[gridSectionIndex_X][gridSectionIndex_Z].addSurfaceCube(gapFillingCubeAABB);
+                    }
+
+                    currentHeight -= ProgramInformation::WorldSettings::getIndividualCubeLength();
+                }
+            }
+        }
     }
 
     void WorldGenerator::fillGridSectionSurfaceCubes(GridSection &gridSection, FastNoise &perlinNoise)
@@ -103,11 +201,14 @@ namespace World::WorldLogic
                     cubeHeight -= 1;
                 }
 
+                unsigned int xOffset = gridSection.getSurroundingCube().getXRange().getMin();
+                unsigned int zOffset = gridSection.getSurroundingCube().getZRange().getMin();
+
                 BoundingVolumes::StaticAABB surfaceCube
                         {
-                            XRange(x, x + cubeLength),
-                            YRange(cubeHeight, cubeHeight + cubeLength),
-                            ZRange(z, z + cubeLength),
+                                XRange(xOffset + x, xOffset + x + cubeLength),
+                                YRange(cubeHeight, cubeHeight + cubeLength),
+                                ZRange(zOffset + z, zOffset + z + cubeLength),
                         };
 
                 gridSection.addSurfaceCube(surfaceCube);

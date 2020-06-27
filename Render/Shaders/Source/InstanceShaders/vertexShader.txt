@@ -7,28 +7,11 @@ layout (location = 2) in vec3 instanceTranslation;
 uniform mat4 projection;
 uniform mat4 view;
 
-uniform uint baseGridSectionID;
-uniform uint gridSectionsPerWorldLength;
-uniform uint gridSectionLength;
-uniform uint surfaceCubesPerGridSection;
-
 out vec2 textureCoordinates;
 
 void main()
 {
-    uint gridSectionIdentifier = baseGridSectionID + gl_InstanceID / surfaceCubesPerGridSection;
-
-    uint columnOffset = gridSectionIdentifier / gridSectionsPerWorldLength;
-
-    uint rowOffset = gridSectionIdentifier - (columnOffset * gridSectionsPerWorldLength);
-
-    vec3 adjustedVertex = vertexPosition;
-
-    adjustedVertex.x += columnOffset * gridSectionLength + instanceTranslation.x;
-    adjustedVertex.y += instanceTranslation.y;
-    adjustedVertex.z += (rowOffset * gridSectionLength) + instanceTranslation.z;
-
-    gl_Position = projection * view * vec4(adjustedVertex, 1.0);
+    gl_Position = projection * view * vec4(vertexPosition + instanceTranslation, 1.0);
 
     textureCoordinates = inTextureCoordinates;
 }
