@@ -38,6 +38,8 @@ namespace Render::VAO
 
             /**
              * Initializes the VAO by uploading the required model vertices needed to render the terrain.
+             *
+             * @param textureManager that holds all of the textures used in the program
              */
             explicit TerrainVAO(Textures::TextureManager &textureManager);
 
@@ -54,7 +56,7 @@ namespace Render::VAO
             /**
              * Store the translations required for rendering in the buffer.
              *
-             * @param translations of the cubes to render
+             * @param translations of the cubes the terrain
              * @param gridSectionsInformation information about the number of model instances for each grid section
              */
             void uploadInstanceTranslations(const std::vector<glm::vec3> &translations, const std::vector<DataStructures::GridSectionInstanceRange> &gridSectionsInformation);

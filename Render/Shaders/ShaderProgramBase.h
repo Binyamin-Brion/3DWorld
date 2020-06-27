@@ -78,8 +78,9 @@ namespace Render::Shaders
              * Any exception with the error message is thrown if an error occurred.
              *
              * @param shader to check for compilation errors
+             * @param sourceLocation the location of the shader being compiled on the disk
              */
-            void checkErrorShader(unsigned shader);
+            void checkErrorShader(unsigned shader, const std::string &sourceLocation);
 
             /**
              * Checks for any error in the creation of shader program.

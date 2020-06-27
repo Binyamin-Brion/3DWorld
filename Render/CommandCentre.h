@@ -6,10 +6,12 @@
 #define GAMEPROTOTYPE_COMMANDCENTRE_H
 
 #include "Shaders/InstanceShaderProgram.h"
+#include "Shaders/SkyBoxShaderProgram.h"
 #include "VAO/TerrainVAO.h"
 #include "../World/BoundingVolumes/StaticAABB.h"
 #include "FrustumCulling/FrustumCuller.h"
 #include "Textures/TextureManager.h"
+#include "VAO/SkyBoxVAO.h"
 
 namespace Window::Camera
 {
@@ -52,10 +54,12 @@ namespace Render
             [[nodiscard]] std::vector<unsigned int> findVisibleGridSections(const Window::Camera::CameraObject &camera) const;
 
             Shaders::InstanceShaderProgram instanceShaderProgram;
+            Shaders::SkyBoxShaderProgram skyBoxShaderProgram;
 
             Textures::TextureManager textureManager;
 
             VAO::TerrainVAO terrainVao;
+            VAO::SkyBoxVAO skyBoxVao;
             FrustumCulling::FrustumCuller frustumCuller;
 
             // Stripped out information of the passed in grid sections, and to avoid holding a reference to the passed in

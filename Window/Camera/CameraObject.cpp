@@ -11,8 +11,8 @@ namespace Window::Camera
     CameraObject::CameraObject()
                     :
                         maxAngleLookUp{89.0f},
-                        maxAngleLookDown{-30.0f},
-                        position{750.f, 95.f, 750.f},
+                        maxAngleLookDown{-80.0f},
+                        position{750.f, 85.f, 755.f},
                         front{0.f, 0.f, -1.0f},
                         up{0.0f, 1.0f, 0.0f},
                         yaw{-90.0f},

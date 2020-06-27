@@ -13,14 +13,19 @@ namespace Render::Textures
 {
     TextureManager::TextureManager()
     {
-        glActiveTexture(GL_TEXTURE0);
-
-
         textureRelations_512x512.maxNumberTextures = 50;
         textureRelations_512x512.textureID = 0;
         textureRelations_512x512.dimension = 512;
 
+        textureRelations_2048x2048.maxNumberTextures = 6;
+        textureRelations_2048x2048.textureID = 1;
+        textureRelations_2048x2048.dimension = 2048;
+
+        glActiveTexture(GL_TEXTURE0);
         initializeTextureVBO(textureRelations_512x512);
+
+        glActiveTexture(GL_TEXTURE1);
+        initializeTextureVBO(textureRelations_2048x2048);
     }
 
     CompressFactor TextureManager::getCompressFactor() const
@@ -87,14 +92,8 @@ namespace Render::Textures
         }
 
         // No texture arrays created hold a texture larger than 2048 x 2048.
-        if(image.width() > 512 || image.height() > 512)
+        if(image.width() > 2048 || image.height() > 2048)
         {
-            QImage image{textureLocation};
-
-            image = image.scaled(512, 512);
-
-            image.save("scaledImage.jpg");
-
             throw std::runtime_error{"Only textures up to 2048 x 2048 are supported!"};
         }
 
@@ -103,6 +102,7 @@ namespace Render::Textures
         image = image.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
 
         uploadTexture(textureRelations_512x512, textureLocation, image);
+        uploadTexture(textureRelations_2048x2048, textureLocation, image);
 
         if(!textureBank.containsTexture(textureLocation))
         {
@@ -143,17 +143,17 @@ namespace Render::Textures
             return;
         }
 
-        // Create an adequately sized texture to uploaded, if the given texture is not of the correct size.
-        // Do this now so that an updated CompressionFactor is created for the caller of this function, that will be
-        // correct even if the texture has already been uploaded into vRam. This is required because the face of a model
-        // using a texture may be different from each other.
-        QImage imageToUpload = fillUnusedArea(image, textureRelations.dimension);
-
         // Texture already loaded; don't load it again. Waste of vRam.
         if(textureBank.containsTexture(textureLocation))
         {
             return;
         }
+
+        // Create an adequately sized texture to uploaded, if the given texture is not of the correct size.
+        // Do this now so that an updated CompressionFactor is created for the caller of this function, that will be
+        // correct even if the texture has already been uploaded into vRam. This is required because the face of a model
+        // using a texture may be different from each other.
+        QImage imageToUpload = fillUnusedArea(image, textureRelations.dimension);
 
         glActiveTexture(GL_TEXTURE0 + textureRelations.textureID);
         glBindTexture(GL_TEXTURE_2D_ARRAY, textureRelations.textureVBO);

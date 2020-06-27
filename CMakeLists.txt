@@ -54,6 +54,6 @@ add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c ${FAST_NOISE_FOLD
         Render/VAO/VAOBase.h ModelLoading/Face.h ModelLoading/Face.cpp ModelLoading/HelperFunctions.cpp ModelLoading/HelperFunctions.h ModelLoading/Mesh.cpp
         ModelLoading/Mesh.h ModelLoading/Model.cpp ModelLoading/Model.h Render/FrustumCulling/FrustumPlane.h Render/FrustumCulling/FrustumCuller.h Render/FrustumCulling/FrustumCuller.cpp
         Render/Textures/CompressFactor.h Render/Textures/TextureBank.cpp Render/Textures/TextureBank.h Render/Textures/TextureID.h Render/Textures/TextureManager.cpp Render/Textures/TextureManager.h
-        Render/DataStructures/MeshRenderInformation.h Render/DataStructures/ModelRenderInformation.h Render/DataStructures/RenderStructure.cpp Render/DataStructures/RenderStructure.h Render/DataStructures/GridSectionRenderData.h Render/DataStructures/SortedModel.h Render/DataStructures/GridSectionInstanceRange.h)
+        Render/DataStructures/MeshRenderInformation.h Render/DataStructures/ModelRenderInformation.h Render/DataStructures/RenderStructure.cpp Render/DataStructures/RenderStructure.h Render/DataStructures/GridSectionRenderData.h Render/DataStructures/SortedModel.h Render/DataStructures/GridSectionInstanceRange.h Render/Shaders/SkyBoxShaderProgram.cpp Render/Shaders/SkyBoxShaderProgram.h Render/VAO/SkyBoxVAO.cpp Render/VAO/SkyBoxVAO.h)
 
 target_link_libraries(GameProtoType glfw assimp ${Qt5Widgets_LIBRARIES} -lstdc++fs)

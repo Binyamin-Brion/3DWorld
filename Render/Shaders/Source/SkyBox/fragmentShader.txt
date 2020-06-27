@@ -1,0 +1,15 @@
+#version 440 core
+
+in vec2 textureCoordinates;
+
+uniform int textureSamplerIndex;
+uniform int textureSamplerOffset;
+
+uniform sampler2DArray textures_2048x2048;
+
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = texture(textures_2048x2048, vec3(textureCoordinates, textureSamplerOffset));
+}

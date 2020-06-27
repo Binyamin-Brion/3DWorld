@@ -83,6 +83,7 @@ namespace Render::Textures
             void uploadTexture(TextureRelation &textureRelations, const QString &textureLocation, const QImage &image);
 
             TextureRelation textureRelations_512x512; // Texture arrays for 512x512 textures
+            TextureRelation textureRelations_2048x2048; // Texture arrays for 2048x2048 textures
 
             TextureBank textureBank;
             CompressFactor compressFactor; // The most recent compress factor for the most recent texture upload attempt.

@@ -41,10 +41,10 @@ namespace Render::Shaders
         glShaderSource(shader, 1, &sourceCodeCStr, nullptr);
         glCompileShader(shader);
 
-        checkErrorShader(shader);
+        checkErrorShader(shader, sourceLocation);
     }
 
-    void ShaderProgramBase::checkErrorShader(unsigned shader)
+    void ShaderProgramBase::checkErrorShader(unsigned shader, const std::string &sourceLocation)
     {
         int success;
 
@@ -59,7 +59,7 @@ namespace Render::Shaders
 
             glDeleteShader(shader);
 
-            throw std::runtime_error{"Error compiling shader: " + std::string{errorMessage} + " at: " + __PRETTY_FUNCTION__ };
+            throw std::runtime_error{"Error compiling shader: " + std::string{errorMessage} + " at: " + __PRETTY_FUNCTION__  + " in source file: " + sourceLocation};
         }
     }
 

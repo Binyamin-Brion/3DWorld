@@ -14,7 +14,8 @@ namespace Render
 {
     CommandCentre::CommandCentre()
                     :
-                        terrainVao{textureManager}
+                        terrainVao{textureManager},
+                        skyBoxVao{textureManager}
     {
 
     }
@@ -24,12 +25,19 @@ namespace Render
         frustumCuller.updatePlaneCoefficients(camera.getProjectionMatrix() * camera.getViewMatrix());
 
         instanceShaderProgram.useProgram();
+        skyBoxShaderProgram.uploadInt("textures_512x512", 0);
         instanceShaderProgram.uploadMat4x4("projection", camera.getProjectionMatrix());
         instanceShaderProgram.uploadMat4x4("view", camera.getViewMatrix());
 
         const std::vector<unsigned int> visibleGridSections = findVisibleGridSections(camera);
 
         terrainVao.render(instanceShaderProgram, visibleGridSections);
+
+        skyBoxShaderProgram.useProgram();
+        skyBoxShaderProgram.uploadInt("textures_2048x2048", 1);
+        skyBoxShaderProgram.uploadMat4x4("projectionMatrix", camera.getProjectionMatrix());
+        skyBoxShaderProgram.uploadMat4x4("viewMatrix", glm::mat4x4{glm::mat3x3{camera.getViewMatrix()}});
+        skyBoxVao.render(skyBoxShaderProgram);
     }
 
     void CommandCentre::uploadWorld(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections)

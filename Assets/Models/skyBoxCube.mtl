@@ -1,0 +1,68 @@
+# Blender MTL File: 'skyBoxCube.blend'
+# Material Count: 6
+
+newmtl skyBox_Back
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd /home/binybrion/CLionProjects/Game/Assets/textures/Space/space_back.jpg
+
+newmtl skyBox_Bottom
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd /home/binybrion/CLionProjects/Game/Assets/textures/Space/space_down.jpg
+
+newmtl skyBox_Front
+Ns 323.999994
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd /home/binybrion/CLionProjects/Game/Assets/textures/Space/space_front.jpg
+
+newmtl skyBox_Left
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd /home/binybrion/CLionProjects/Game/Assets/textures/Space/space_left.jpg
+
+newmtl skyBox_Right
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd /home/binybrion/CLionProjects/Game/Assets/textures/Space/space_right.jpg
+
+newmtl skyBox_Top
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd /home/binybrion/CLionProjects/Game/Assets/textures/Space/space_up.jpg

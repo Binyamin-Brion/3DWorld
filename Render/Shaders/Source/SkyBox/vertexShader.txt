@@ -1,0 +1,18 @@
+#version 440 core
+
+layout (location = 0) in vec3 cubeMapVertex;
+layout (location = 1) in vec2 textureCoords;
+
+uniform mat4 projectionMatrix;
+uniform mat4 viewMatrix;
+
+out vec2 textureCoordinates;
+
+void main()
+{
+    vec4 computedVertex = projectionMatrix * viewMatrix * vec4(cubeMapVertex, 1.0);
+
+    gl_Position = computedVertex.xyww;
+
+    textureCoordinates = textureCoords;
+}

@@ -24,7 +24,7 @@ namespace Render::VAO
     }
 
     void TerrainVAO::render(Shaders::InstanceShaderProgram &instanceShaderProgram, const std::vector<unsigned int> &visibleGridSection)
-    {printf("%lu \n", visibleGridSection.size());
+    {//printf("%lu \n", visibleGridSection.size());
         bind();
 
         auto iterator = visibleGridSection.begin();
