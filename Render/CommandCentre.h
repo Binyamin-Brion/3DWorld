@@ -51,7 +51,27 @@ namespace Render
 
         private:
 
+            /**
+             * Find the visible grid sections (ie grid sections that are in the viewing frustum).
+             *
+             * @param camera being used for rendering
+             * @return vector of visible grid sections IDs
+             */
             [[nodiscard]] std::vector<unsigned int> findVisibleGridSections(const Window::Camera::CameraObject &camera) const;
+
+            /**
+             * Stage the instance data for all of the static objects in the world.
+             *
+             * @param gridSections containing the world data to render
+             */
+            void stageStaticObjects(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections);
+
+            /**
+             * Stage the instance data for all of the surface cubes in the world.
+             *
+             * @param gridSections containing the world data to render
+             */
+            void stageSurfaceCubes(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections);
 
             Shaders::InstanceShaderProgram instanceShaderProgram;
             Shaders::SkyBoxShaderProgram skyBoxShaderProgram;

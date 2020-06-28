@@ -23,18 +23,6 @@ namespace World::WorldLogic
         unsigned int xRange = static_cast<unsigned int>(surroundingAABB.getXRange().getMax() - surroundingAABB.getXRange().getMin());
         unsigned int zRange = static_cast<unsigned int>(surroundingAABB.getZRange().getMax() - surroundingAABB.getZRange().getMin());
 
-        for(unsigned int x = 0; x < xRange; ++x)
-        {
-            heightMap.emplace_back();
-
-            for(unsigned int z = 0; z < zRange; ++z)
-            {
-                unsigned int initialCubeHeight = 0;
-
-                heightMap.back().push_back(initialCubeHeight);
-            }
-        }
-
         gridID = gridSectionID;
     }
 
@@ -43,14 +31,14 @@ namespace World::WorldLogic
         surfaceCubes.push_back(cubeAABB);
     }
 
+    void GridSection::addStaticObject(Objects::StaticObject staticObject)
+    {
+        staticObjects.push_back(std::move(staticObject));
+    }
+
     unsigned int GridSection::getGridSectionID() const
     {
         return gridID;
-    }
-
-    unsigned int GridSection::getHeightAt(unsigned int x, unsigned int z) const
-    {
-        return heightMap[x][z];
     }
 
     const std::vector<BoundingVolumes::StaticAABB>& GridSection::getSurfaceCubes() const
@@ -63,8 +51,8 @@ namespace World::WorldLogic
         return surroundingAABB;
     }
 
-    void GridSection::setHeight(unsigned int x, unsigned int z, unsigned height)
+    const std::vector<Objects::StaticObject> &GridSection::getStaticObjects() const
     {
-        heightMap[x][z] = height;
+        return staticObjects;
     }
 }

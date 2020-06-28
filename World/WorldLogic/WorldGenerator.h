@@ -34,6 +34,11 @@ namespace World::WorldLogic
         private:
 
             /**
+             * Add trees to the world by determining where in the world to add those trees.
+             */
+            void addTrees();
+
+            /**
              * Get the height of the world at the location to the east of the passed in location.
              *
              * @param xPos of the location whose neighbour height is being looked at

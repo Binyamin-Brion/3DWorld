@@ -3,9 +3,9 @@
 //
 
 #include "TerrainVAO.h"
-#include "../../ModelLoading/Model.h"
 #include "../Shaders/InstanceShaderProgram.h"
-#include "../../ProgramInformation/WorldSettings.h"
+#include "../DataStructures/RenderInformation.h"
+#include "../../ProgramInformation/AssetLocations.h"
 
 namespace Render::VAO
 {
@@ -14,7 +14,8 @@ namespace Render::VAO
         bind();
 
         loadModel(textureManager,
-                  {getModelAssetFolder().append("surfaceCubeGrass.obj")
+                  {ProgramInformation::AssetLocations::getSurfaceCubeLocation(),
+                   ProgramInformation::AssetLocations::getTreeAssetLocation()
                   });
 
         instanceTranslations.bind();
@@ -83,16 +84,21 @@ namespace Render::VAO
         }
     }
 
-    void TerrainVAO::uploadInstanceTranslations(const std::vector<glm::vec3> &translations, const std::vector<DataStructures::GridSectionInstanceRange> &gridSectionsInformation)
+    void TerrainVAO::stageInstanceTranslations(const DataStructures::RenderInformation &renderInformation)
     {
-        instanceTranslations.uploadData(translations);
+        instanceTranslationsData.insert(instanceTranslationsData.end(), renderInformation.translations.begin(), renderInformation.translations.end());
 
         for(const auto &i : modelRenderingInformation)
         {
-            if(i.modelLocation == getModelAssetFolder().append("surfaceCubeGrass.obj").c_str())
+            if(i.modelLocation == renderInformation.modelFileName)
             {
-                renderStructure.addModel(i, gridSectionsInformation);
+                renderStructure.addModel(i, renderInformation.gridSectionInstanceRange);
             }
         }
+    }
+
+    void TerrainVAO::uploadInstanceTranslations()
+    {
+        instanceTranslations.uploadData(instanceTranslationsData);
     }
 }

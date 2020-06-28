@@ -7,6 +7,7 @@
 
 #include <vector>
 #include "../BoundingVolumes/StaticAABB.h"
+#include "../../Objects/StaticObject.h"
 
 namespace World::WorldLogic
 {
@@ -34,20 +35,18 @@ namespace World::WorldLogic
             void addSurfaceCube(BoundingVolumes::StaticAABB cubeAABB);
 
             /**
+             * Add an additional static object to this grid section.
+             *
+             * @param staticObject
+             */
+            void addStaticObject(Objects::StaticObject staticObject);
+
+            /**
              * Get the ID of this grid section.
              *
              * @return grid section's ID
              */
             [[nodiscard]] unsigned int getGridSectionID() const;
-
-            /**
-             * Gets the height of the surface cube at the passed in point.
-             *
-             * @param x index of the surface cube relative to this grid section; range [0, bounding volumes X-Range max)
-             * @param z index of the surface cube relative to this grid section; range [0, bounding volumes Z-Range max)
-             * @return height of the surface cube at the given location
-             */
-            [[nodiscard]] unsigned int getHeightAt(unsigned int x, unsigned int z) const;
 
             /**
              * Get the surface cubes held within this part of the game world.
@@ -64,18 +63,16 @@ namespace World::WorldLogic
             [[nodiscard]] const BoundingVolumes::StaticAABB& getSurroundingCube() const;
 
             /**
-             * Sets the height of the surface cube at the passed in point.
+             * Get the static objects stored in this grid section.
              *
-             * @param x index of the surface cube relative to this grid section; range [0, bounding volumes X-Range max)
-             * @param z index of the surface cube relative to this grid section; range [0, bounding volumes Z-Range max)
-             * @param height height of the surface cube at the given location
+             * @return vector of stored static objects
              */
-            void setHeight(unsigned int x, unsigned int z, unsigned height);
+            [[nodiscard]] const std::vector<Objects::StaticObject>& getStaticObjects() const;
 
         private:
             BoundingVolumes::StaticAABB surroundingAABB;
             std::vector<BoundingVolumes::StaticAABB> surfaceCubes;
-            std::vector<std::vector<unsigned int>> heightMap;
+            std::vector<Objects::StaticObject> staticObjects;
 
             unsigned int gridID;
     };

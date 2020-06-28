@@ -38,6 +38,9 @@ include_directories(${Qt5Widgets_INCLUDES})
 set(FAST_NOISE_FOLDER ${DEPENDENCIES_FOLDER}/FastNoise)
 include_directories(${FAST_NOISE_FOLDER})
 
+set(POISSON_DISK_FOLDER ${DEPENDENCIES_FOLDER}/PoissonDisk)
+include_directories(${POISSON_DISK_FOLDER})
+
 add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c ${FAST_NOISE_FOLDER}/FastNoise.cpp Window/RenderWindow.cpp Window/RenderWindow.h Logging/Logger.cpp
                Logging/Logger.h Logging/LoggerPIMPL.cpp Logging/LoggerPIMPL.h Render/CompileTimeChecks/ValidMappingFlags.h
                Render/CompileTimeChecks/ValidBufferTarget.h Render/CompileTimeChecks/ValidBufferFlags.h
@@ -54,6 +57,6 @@ add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c ${FAST_NOISE_FOLD
         Render/VAO/VAOBase.h ModelLoading/Face.h ModelLoading/Face.cpp ModelLoading/HelperFunctions.cpp ModelLoading/HelperFunctions.h ModelLoading/Mesh.cpp
         ModelLoading/Mesh.h ModelLoading/Model.cpp ModelLoading/Model.h Render/FrustumCulling/FrustumPlane.h Render/FrustumCulling/FrustumCuller.h Render/FrustumCulling/FrustumCuller.cpp
         Render/Textures/CompressFactor.h Render/Textures/TextureBank.cpp Render/Textures/TextureBank.h Render/Textures/TextureID.h Render/Textures/TextureManager.cpp Render/Textures/TextureManager.h
-        Render/DataStructures/MeshRenderInformation.h Render/DataStructures/ModelRenderInformation.h Render/DataStructures/RenderStructure.cpp Render/DataStructures/RenderStructure.h Render/DataStructures/GridSectionRenderData.h Render/DataStructures/SortedModel.h Render/DataStructures/GridSectionInstanceRange.h Render/Shaders/SkyBoxShaderProgram.cpp Render/Shaders/SkyBoxShaderProgram.h Render/VAO/SkyBoxVAO.cpp Render/VAO/SkyBoxVAO.h)
+        Render/DataStructures/MeshRenderInformation.h Render/DataStructures/ModelRenderInformation.h Render/DataStructures/RenderStructure.cpp Render/DataStructures/RenderStructure.h Render/DataStructures/GridSectionRenderData.h Render/DataStructures/SortedModel.h Render/DataStructures/GridSectionInstanceRange.h Render/Shaders/SkyBoxShaderProgram.cpp Render/Shaders/SkyBoxShaderProgram.h Render/VAO/SkyBoxVAO.cpp Render/VAO/SkyBoxVAO.h Objects/StaticObject.cpp Objects/StaticObject.h ProgramInformation/AssetLocations.cpp ProgramInformation/AssetLocations.h Render/DataStructures/RenderInformation.h)
 
 target_link_libraries(GameProtoType glfw assimp ${Qt5Widgets_LIBRARIES} -lstdc++fs)

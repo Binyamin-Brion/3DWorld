@@ -4,6 +4,7 @@
 
 #include "SkyBoxVAO.h"
 #include "../Shaders/SkyBoxShaderProgram.h"
+#include "../../ProgramInformation/AssetLocations.h"
 
 namespace Render::VAO
 {
@@ -12,7 +13,7 @@ namespace Render::VAO
         bind();
 
         loadModel(textureManager,
-                  {getModelAssetFolder().append("skyBoxCube.obj")
+                  {ProgramInformation::AssetLocations::getSkyBoxLocation()
                   });
 
     }

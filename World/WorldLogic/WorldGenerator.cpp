@@ -6,6 +6,8 @@
 #include "WorldGenerator.h"
 #include "../../ProgramInformation/WorldSettings.h"
 #include "FastNoise.h"
+#include "../../ProgramInformation/AssetLocations.h"
+#include "poisson_disk_sampling.h"
 
 namespace World::WorldLogic
 {
@@ -73,6 +75,8 @@ namespace World::WorldLogic
         }
 
         fillGaps();
+
+        addTrees();
     }
 
     const std::vector<std::vector<GridSection>> &WorldGenerator::getTerrainData() const
@@ -81,6 +85,58 @@ namespace World::WorldLogic
     }
 
     // Beginning of private functions
+
+    void WorldGenerator::addTrees()
+    {
+        std::vector<std::vector<Objects::StaticObject>> treeStaticObject;
+
+        treeStaticObject.insert(treeStaticObject.end(), gridSections.size(), std::vector<Objects::StaticObject>{});
+
+        for(auto &i : treeStaticObject)
+        {
+            i.insert(i.end(), gridSections.size(), Objects::StaticObject{ProgramInformation::AssetLocations::getTreeAssetLocation()});
+        }
+
+    //    Objects::StaticObject treeStaticObject{ProgramInformation::AssetLocations::getTreeAssetLocation()};
+
+        float treeRadius = 20.0f;
+
+        std::array<float, 2> minPoint{0, 0};
+
+        std::array<float, 2> maxPoint{500, 500};
+
+        auto treeLocations = thinks::PoissonDiskSampling(treeRadius, minPoint, maxPoint);
+
+        for(const auto &i : treeLocations)
+        {
+            unsigned int xPos = i[0];
+            unsigned int zPos = i[1];
+
+            unsigned int gridSectionIndex_X = xPos * 2 / ProgramInformation::WorldSettings::getGridSectionLength();
+
+            unsigned int gridSectionIndex_Z = zPos * 2/ ProgramInformation::WorldSettings::getGridSectionLength();
+
+            treeStaticObject[gridSectionIndex_X][gridSectionIndex_Z].addPosition(glm::vec3{xPos * 2, heightMap[xPos][zPos] + 1, zPos * 2});
+        }
+
+        for(unsigned int i = 0; i < gridSections.size(); ++i)
+        {
+            for(unsigned int j = 0; j < gridSections[i].size(); ++j)
+            {
+                gridSections[i][j].addStaticObject(treeStaticObject[i][j]);
+            }
+        }
+
+//        treeStaticObject.addPosition(glm::vec3{0.f, 75.f, 0.f});
+//
+//        gridSections[0][0].addStaticObject(treeStaticObject);
+//
+//        Objects::StaticObject flowerStaticObject{ProgramInformation::AssetLocations::getFlowerAssetLocation()};
+//
+//        flowerStaticObject.addPosition(glm::vec3{5.f, 75.f, 0.f});
+//
+//        gridSections[0][0].addStaticObject(flowerStaticObject);
+    }
 
     unsigned char WorldGenerator::getHeightEast(unsigned int xPos, unsigned int zPos) const
     {
@@ -212,6 +268,8 @@ namespace World::WorldLogic
                         };
 
                 gridSection.addSurfaceCube(surfaceCube);
+
+                heightMap[heightMapX][heightMapZ] = cubeHeight;
             }
         }
     }

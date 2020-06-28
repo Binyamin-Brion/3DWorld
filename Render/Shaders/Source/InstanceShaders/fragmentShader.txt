@@ -15,7 +15,7 @@ void main()
     {
         case 0: // 512x512 texture array
             FragColor = texture(textures_512x512, vec3(textureCoordinates, textureSamplerOffset));
-            FragColor /= 2;
+            FragColor /= 1.5;
             break;
 
         default:

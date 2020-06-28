@@ -43,13 +43,6 @@ namespace Render::VAO
             VAOBase();
 
             /**
-             * Get the folder holding the model files used for rendering.
-             *
-             * @return asset model folder location
-             */
-            std::experimental::filesystem::path getModelAssetFolder();
-
-            /**
              * Loads the model at the given location and stores the model information into the appropriate buffers within
              * this class.
              *

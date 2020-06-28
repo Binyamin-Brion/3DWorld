@@ -12,4 +12,10 @@ out vec4 FragColor;
 void main()
 {
     FragColor = texture(textures_2048x2048, vec3(textureCoordinates, textureSamplerOffset));
+
+    float brightnessFactor = 4.0f;
+
+    FragColor.r = min(1.0, FragColor.r * brightnessFactor * 3);
+    FragColor.g = min(1.0, FragColor.g * brightnessFactor);
+    FragColor.b = min(1.0, FragColor.b * brightnessFactor);
 }

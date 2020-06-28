@@ -9,6 +9,9 @@
 #include "../World/WorldLogic/GridSection.h"
 #include "../ProgramInformation/WorldSettings.h"
 #include "DataStructures/GridSectionInstanceRange.h"
+#include <unordered_map>
+#include "DataStructures/RenderInformation.h"
+#include "../ProgramInformation/AssetLocations.h"
 
 namespace Render
 {
@@ -22,6 +25,8 @@ namespace Render
 
     void CommandCentre::render(const Window::Camera::CameraObject &camera)
     {
+        std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
         frustumCuller.updatePlaneCoefficients(camera.getProjectionMatrix() * camera.getViewMatrix());
 
         instanceShaderProgram.useProgram();
@@ -38,35 +43,19 @@ namespace Render
         skyBoxShaderProgram.uploadMat4x4("projectionMatrix", camera.getProjectionMatrix());
         skyBoxShaderProgram.uploadMat4x4("viewMatrix", glm::mat4x4{glm::mat3x3{camera.getViewMatrix()}});
         skyBoxVao.render(skyBoxShaderProgram);
+
+        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+       // printf("%d \n", std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count());
     }
 
     void CommandCentre::uploadWorld(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections)
     {
-        std::vector<glm::vec3> instanceTranslations;
-        std::vector<DataStructures::GridSectionInstanceRange> gridSectionsInstanceRange;
+        stageSurfaceCubes(gridSections);
 
-        for(const auto &i : gridSections)
-        {
-            gridSectionsInformation.emplace_back();
+        stageStaticObjects(gridSections);
 
-            for(const auto &j : i)
-            {
-                GridSectionInformation gridSectionInformation{j.getGridSectionID(), j.getSurroundingCube()};
-
-                gridSectionsInformation.back().push_back(gridSectionInformation);
-
-                // Store the instance count for each grid section.
-                gridSectionsInstanceRange.push_back(DataStructures::GridSectionInstanceRange{j.getGridSectionID(), static_cast<unsigned int>(j.getSurfaceCubes().size())});
-
-                // Create translations from the cube's AABB.
-                for(const auto &surfaceCube : j.getSurfaceCubes())
-                {
-                    instanceTranslations.emplace_back(surfaceCube.getXRange().getMin(), surfaceCube.getYRange().getMin(), surfaceCube.getZRange().getMin());
-                }
-            }
-        }
-
-        terrainVao.uploadInstanceTranslations(instanceTranslations, gridSectionsInstanceRange);
+        terrainVao.uploadInstanceTranslations();
     }
 
     std::vector<unsigned int> CommandCentre::findVisibleGridSections(const Window::Camera::CameraObject &camera) const
@@ -76,7 +65,7 @@ namespace Render
         World::BoundingVolumes::StaticAABB surroundingAABB
                 {
                     World::XRange(camera.getPosition().x - camera.getDrawDistance(), camera.getPosition().x + camera.getDrawDistance()),
-                    World::YRange(-std::numeric_limits<unsigned int>::max(), std::numeric_limits<unsigned int>::max()),
+                    World::YRange(-(float)std::numeric_limits<unsigned int>::max(), std::numeric_limits<unsigned int>::max()),
                     World::ZRange(camera.getPosition().z- camera.getDrawDistance(), camera.getPosition().z + camera.getDrawDistance())
                 };
 
@@ -165,5 +154,112 @@ namespace Render
         std::sort(visibleGridSections.begin(), visibleGridSections.end());
 
         return visibleGridSections;
+    }
+
+    void CommandCentre::stageStaticObjects(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections)
+    {
+
+        for(const auto &modelFileName : Objects::StaticObject::getSpecifiedModels())
+        {
+            std::vector<glm::vec3> instanceTranslations;
+            std::vector<DataStructures::GridSectionInstanceRange> gridSectionsInstanceRange;
+
+            for(const auto &column : gridSections)
+            {
+                for(const auto &j : column)
+                {
+                    const Objects::StaticObject *staticObject = nullptr;
+
+                    for(const auto &addedModel : j.getStaticObjects())
+                    {
+                        if(addedModel.getModelFileName() == modelFileName)
+                        {
+                            staticObject = &addedModel;
+
+                            break;
+                        }
+                    }
+
+                    if(staticObject == nullptr)
+                    {
+                        continue;
+                    }
+
+                    // Store the instance count for each grid section.
+                    gridSectionsInstanceRange.push_back(DataStructures::GridSectionInstanceRange{j.getGridSectionID(), static_cast<unsigned int>(staticObject->getPositions().size())});
+
+                    instanceTranslations.insert(instanceTranslations.end(), staticObject->getPositions().begin(), staticObject->getPositions().end());
+                }
+            }
+
+            DataStructures::RenderInformation renderInformation;
+            renderInformation.modelFileName = modelFileName;
+            renderInformation.translations = std::move(instanceTranslations);
+            renderInformation.gridSectionInstanceRange = std::move(gridSectionsInstanceRange);
+
+            terrainVao.stageInstanceTranslations(renderInformation);
+        }
+
+//        for(unsigned int i = 0; i < 1; ++i)
+//        {
+//            for(const auto &column : gridSections)
+//            {
+//                gridSectionsInformation.emplace_back();
+//
+//                for(const auto &j : column)
+//                {
+//                    if(j.getStaticObjects().empty())
+//                    {
+//                        continue;
+//                    }
+//
+//                    // Store the instance count for each grid section.
+//                    gridSectionsInstanceRange.push_back(DataStructures::GridSectionInstanceRange{j.getGridSectionID(), static_cast<unsigned int>(j.getStaticObjects()[i].getPositions().size())});
+//
+//                    instanceTranslations.insert(instanceTranslations.end(), j.getStaticObjects()[i].getPositions().begin(), j.getStaticObjects()[i].getPositions().end());
+//                }
+//            }
+//
+//            DataStructures::RenderInformation renderInformation;
+//            renderInformation.modelFileName = ProgramInformation::AssetLocations::getTreeAssetLocation();
+//            renderInformation.translations = std::move(instanceTranslations);
+//            renderInformation.gridSectionInstanceRange = std::move(gridSectionsInstanceRange);
+//
+//            terrainVao.stageInstanceTranslations(renderInformation);
+//        }
+    }
+
+    void CommandCentre::stageSurfaceCubes(const std::vector<std::vector<World::WorldLogic::GridSection>> &gridSections)
+    {
+        std::vector<glm::vec3> instanceTranslations;
+        std::vector<DataStructures::GridSectionInstanceRange> gridSectionsInstanceRange;
+
+        for(const auto &i : gridSections)
+        {
+            gridSectionsInformation.emplace_back();
+
+            for(const auto &j : i)
+            {
+                GridSectionInformation gridSectionInformation{j.getGridSectionID(), j.getSurroundingCube()};
+
+                gridSectionsInformation.back().push_back(gridSectionInformation);
+
+                // Store the instance count for each grid section.
+                gridSectionsInstanceRange.push_back(DataStructures::GridSectionInstanceRange{j.getGridSectionID(), static_cast<unsigned int>(j.getSurfaceCubes().size())});
+
+                // Create translations from the cube's AABB.
+                for(const auto &surfaceCube : j.getSurfaceCubes())
+                {
+                    instanceTranslations.emplace_back(surfaceCube.getXRange().getMin(), surfaceCube.getYRange().getMin(), surfaceCube.getZRange().getMin());
+                }
+            }
+        }
+
+        DataStructures::RenderInformation renderInformation;
+        renderInformation.modelFileName = ProgramInformation::AssetLocations::getSurfaceCubeLocation();
+        renderInformation.translations = std::move(instanceTranslations);
+        renderInformation.gridSectionInstanceRange = std::move(gridSectionsInstanceRange);
+
+        terrainVao.stageInstanceTranslations(renderInformation);
     }
 }

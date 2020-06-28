@@ -11,7 +11,7 @@
 
 namespace Render::DataStructures
 {
-    class GridSectionInstanceRange;
+    class RenderInformation;
 }
 
 namespace Render::Shaders
@@ -54,18 +54,26 @@ namespace Render::VAO
             void render(Shaders::InstanceShaderProgram &instanceShaderProgram, const std::vector<unsigned int> &visibleGridSections);
 
             /**
-             * Store the translations required for rendering in the buffer.
+             * Store render data required to render static models in the world.
              *
-             * @param translations of the cubes the terrain
-             * @param gridSectionsInformation information about the number of model instances for each grid section
+             * Note: the actual translation data is only uploaded into vRAM after calling uploadInstanceTranslations().
+             *
+             * @param renderInformation the information to render instances of a single static model
              */
-            void uploadInstanceTranslations(const std::vector<glm::vec3> &translations, const std::vector<DataStructures::GridSectionInstanceRange> &gridSectionsInformation);
+            void stageInstanceTranslations(const DataStructures::RenderInformation &renderInformation);
+
+            /**
+             * All instance data that was staged is uploaded into vRam.
+             */
+            void uploadInstanceTranslations();
 
         private:
 
             VBO::BufferData<glm::vec3, GL_ARRAY_BUFFER, GL_STATIC_DRAW> cubeVertices;
             VBO::BufferData<unsigned int, GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW> cubeIndices;
             VBO::BufferData<glm::vec3, GL_ARRAY_BUFFER, GL_STATIC_DRAW> instanceTranslations;
+
+            std::vector<glm::vec3> instanceTranslationsData;
     };
 }
 

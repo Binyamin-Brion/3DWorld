@@ -31,11 +31,6 @@ namespace Render::VAO
         glEnableVertexAttribArray(1);
     }
 
-    std::experimental::filesystem::path VAOBase::getModelAssetFolder()
-    {
-        return std::experimental::filesystem::current_path().parent_path().append("Assets/Models");
-    }
-
     void VAOBase::loadModel(Textures::TextureManager &textureManager, const std::vector<std::string> &modelLocations)
     {
         bind();

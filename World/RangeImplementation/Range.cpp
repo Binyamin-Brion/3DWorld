@@ -35,6 +35,11 @@ namespace World
                 max{max}
     {
         assert(max >= min);
+
+        if(max < min)
+        {
+            assert(false);
+        }
     }
 
     bool Range::operator==(const World::Range &otherRange) const
