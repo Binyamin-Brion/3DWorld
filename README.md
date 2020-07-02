@@ -36,10 +36,10 @@ Below are two sample scenes from the voxel world. Render distance is set to 384 
 
 This project was built with external libraries, which can be found in the ProjectSourceDependices Folder:
 
-* glm
-* thinks/poisson-disk-sampling 
-* glad
-* Auburns /FastNoise 
+* glm (https://glm.g-truc.net/0.9.9/index.html)
+* thinks/poisson-disk-sampling (https://github.com/thinks/poisson-disk-sampling)
+* glad (https://glad.dav1d.de/)
+* Auburns /FastNoise (https://github.com/Auburns/FastNoise)
 
 ## Notes
 
