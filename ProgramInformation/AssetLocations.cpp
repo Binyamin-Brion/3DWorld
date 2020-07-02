@@ -12,6 +12,11 @@ namespace ProgramInformation
         return std::experimental::filesystem::current_path().parent_path().append("Assets/Models/flower.obj");
     }
 
+    std::string AssetLocations::getGrassAssetLocation()
+    {
+        return std::experimental::filesystem::current_path().parent_path().append("Assets/Models/grass.obj");
+    }
+
     std::string AssetLocations::getSkyBoxLocation()
     {
         return std::experimental::filesystem::current_path().parent_path().append("Assets/Models/skyBoxCube.obj");

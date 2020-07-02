@@ -54,6 +54,16 @@ namespace Render::Shaders
             void uploadMat4x4(const std::string &uniformName, const glm::mat4 &matrix);
 
             /**
+             * Uploads a vec3 object into a uniform in the program.
+             *
+             * Note: The program must be bounded by calling useProgram() first!
+             *
+             * @param uniformName name of the uniform to for which the unsigned value is intended
+             * @param vector3 the uniform should have
+             */
+            void uploadVec3(const std::string &uniformName, const glm::vec3 &vector3);
+
+            /**
              * Makes the program the current program.
              */
             void useProgram();
@@ -110,7 +120,7 @@ namespace Render::Shaders
              * @param shaderSourceLocation location of file to read
              * @return contents of the passed in file
              */
-            std::string readShader(const std::string &shaderSourceLocation) const;
+            [[nodiscard]] std::string readShader(const std::string &shaderSourceLocation) const;
 
         protected:
 

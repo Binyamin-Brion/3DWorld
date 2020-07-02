@@ -6,7 +6,11 @@ layout (location = 1) in vec2 textureCoords;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 
+out float fogFactor;
 out vec2 textureCoordinates;
+
+const float density = 0.05;
+const float gradient = 1;
 
 void main()
 {
@@ -15,4 +19,9 @@ void main()
     gl_Position = computedVertex.xyww;
 
     textureCoordinates = textureCoords;
+
+    // The higher the skybox is in the world, apply less fog.
+    // The density of the fog values are reduced by default as it is otherwise too strong.
+    fogFactor = 1 - cubeMapVertex.y;
+    fogFactor /= 1.5;
 }

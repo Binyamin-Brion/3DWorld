@@ -34,9 +34,16 @@ namespace World::WorldLogic
         private:
 
             /**
-             * Add trees to the world by determining where in the world to add those trees.
+             * Adds instances of a static object to the world.
+             *
+             * @param modelLocation the model to load into the world
+             * @param radius the poisson radius of the object
+             * @param min the minimum coordinate location of an instance of the model
+             * @param max the maximum coordinate location of an instance of the model
+             * @param numberSamples how many times to sample the poisson disk for a valid location
+             * @param seed changes locations in the world of the instances of the model
              */
-            void addTrees();
+            void addStaticObject(const std::string &modelLocation, float radius, float min, float max, int numberSamples, int seed);
 
             /**
              * Get the height of the world at the location to the east of the passed in location.

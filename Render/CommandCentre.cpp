@@ -30,6 +30,7 @@ namespace Render
         frustumCuller.updatePlaneCoefficients(camera.getProjectionMatrix() * camera.getViewMatrix());
 
         instanceShaderProgram.useProgram();
+        instanceShaderProgram.uploadVec3("cameraPosition", camera.getPosition());
         skyBoxShaderProgram.uploadInt("textures_512x512", 0);
         instanceShaderProgram.uploadMat4x4("projection", camera.getProjectionMatrix());
         instanceShaderProgram.uploadMat4x4("view", camera.getViewMatrix());

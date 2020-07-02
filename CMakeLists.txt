@@ -16,7 +16,11 @@ find_package(ASSIMP REQUIRED)
 include_directories(${ASSIMP_INCLUDE_DIR})
 
 # All dependencies used as source files should be in this folder.
-set(DEPENDENCIES_FOLDER /home/binybrion/ProjectSourceDependencies)
+# Note: include_subdirectories is not used as this dependencies folder was originally
+# in a different location, so it was easier to just change the location of the folder
+# to a local location, as the dependencies folder is now a part of the project folder
+# to ease the distribution of this program.
+set(DEPENDENCIES_FOLDER ProjectSourceDependencies)
 
 set(GLM_FOLDER ${DEPENDENCIES_FOLDER}/glm-0.9.9.3/glm)
 include_directories(${GLM_FOLDER})
@@ -54,7 +58,7 @@ add_executable(GameProtoType main.cpp ${GLAD_DIRECTORY}/glad.c ${FAST_NOISE_FOLD
                 World/RangeImplementation/ZRange.h World/WorldLogic/GridSection.h World/WorldLogic/GridSection.cpp World/WorldLogic/WorldGenerator.cpp
         World/WorldLogic/WorldGenerator.h ProgramInformation/WorldSettings.cpp ProgramInformation/WorldSettings.h Window/Camera/CameraMovement.h
         Window/Camera/CameraObject.cpp Window/Camera/CameraObject.h Render/VAO/TerrainVAO.cpp Render/VAO/TerrainVAO.h Render/VBO/BufferData.h Render/VAO/VAOBase.cpp
-        Render/VAO/VAOBase.h ModelLoading/Face.h ModelLoading/Face.cpp ModelLoading/HelperFunctions.cpp ModelLoading/HelperFunctions.h ModelLoading/Mesh.cpp
+        Render/VAO/VAOBase.h ModelLoading/HelperFunctions.cpp ModelLoading/HelperFunctions.h ModelLoading/Mesh.cpp
         ModelLoading/Mesh.h ModelLoading/Model.cpp ModelLoading/Model.h Render/FrustumCulling/FrustumPlane.h Render/FrustumCulling/FrustumCuller.h Render/FrustumCulling/FrustumCuller.cpp
         Render/Textures/CompressFactor.h Render/Textures/TextureBank.cpp Render/Textures/TextureBank.h Render/Textures/TextureID.h Render/Textures/TextureManager.cpp Render/Textures/TextureManager.h
         Render/DataStructures/MeshRenderInformation.h Render/DataStructures/ModelRenderInformation.h Render/DataStructures/RenderStructure.cpp Render/DataStructures/RenderStructure.h Render/DataStructures/GridSectionRenderData.h Render/DataStructures/SortedModel.h Render/DataStructures/GridSectionInstanceRange.h Render/Shaders/SkyBoxShaderProgram.cpp Render/Shaders/SkyBoxShaderProgram.h Render/VAO/SkyBoxVAO.cpp Render/VAO/SkyBoxVAO.h Objects/StaticObject.cpp Objects/StaticObject.h ProgramInformation/AssetLocations.cpp ProgramInformation/AssetLocations.h Render/DataStructures/RenderInformation.h)

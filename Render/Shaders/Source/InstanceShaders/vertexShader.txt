@@ -4,14 +4,28 @@ layout (location = 0) in vec3 vertexPosition;
 layout (location = 1) in vec2 inTextureCoordinates;
 layout (location = 2) in vec3 instanceTranslation;
 
+uniform vec3 cameraPosition;
 uniform mat4 projection;
 uniform mat4 view;
 
 out vec2 textureCoordinates;
+out float fogFactor;
+
+const float density = 0.01;
+const float gradient = 1;
 
 void main()
 {
-    gl_Position = projection * view * vec4(vertexPosition + instanceTranslation, 1.0);
+    vec4 cameraSpaceVertex = view * vec4(vec4(vertexPosition + instanceTranslation, 1.0));
+
+    gl_Position = projection * cameraSpaceVertex;
 
     textureCoordinates = inTextureCoordinates;
+
+    float cameraSpaceVertexLength = length(cameraSpaceVertex.xyz);
+
+    fogFactor = exp(-pow((cameraSpaceVertexLength * density), gradient));
+
+    // The fog factor is used in the fragment shader's mix function, which requires a value of [0, 1].
+    fogFactor = clamp(fogFactor, 0.0, 1.0);
 }

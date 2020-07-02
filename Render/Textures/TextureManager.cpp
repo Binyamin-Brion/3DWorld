@@ -66,7 +66,7 @@ namespace Render::Textures
                 }
                 else
                 {
-                    filledImage.setPixelColor(x, y, image.pixel(x, y));
+                    filledImage.setPixelColor(x, y, image.pixelColor(x, y));
                 }
             }
         }

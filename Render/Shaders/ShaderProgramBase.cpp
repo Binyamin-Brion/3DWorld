@@ -23,6 +23,11 @@ namespace Render::Shaders
         glUniformMatrix4fv(glGetUniformLocation(program, uniformName.c_str()), 1, GL_FALSE, &matrix[0][0]);
     }
 
+    void ShaderProgramBase::uploadVec3(const std::string &uniformName, const glm::vec3 &vector3)
+    {
+        glUniform3fv(glGetUniformLocation(program, uniformName.c_str()), 1, &vector3[0]);
+    }
+
     void ShaderProgramBase::useProgram()
     {
         glUseProgram(program);

@@ -1,5 +1,6 @@
 #version 440 core
 
+in float fogFactor;
 in vec2 textureCoordinates;
 
 uniform int textureSamplerIndex;
@@ -17,5 +18,9 @@ void main()
 
     FragColor.r = min(1.0, FragColor.r * brightnessFactor * 3);
     FragColor.g = min(1.0, FragColor.g * brightnessFactor);
-    FragColor.b = min(1.0, FragColor.b * brightnessFactor);
+    FragColor.b = min(1.0, FragColor.b * brightnessFactor * 3);
+
+    vec4 fogColour = vec4(0.25, 0.25, 0.25, 1);
+
+    FragColor = mix(FragColor, fogColour, fogFactor);
 }

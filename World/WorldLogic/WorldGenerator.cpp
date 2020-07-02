@@ -76,7 +76,11 @@ namespace World::WorldLogic
 
         fillGaps();
 
-        addTrees();
+        addStaticObject(ProgramInformation::AssetLocations::getFlowerAssetLocation(), 10, 0, 1600, 30, 4);
+
+        addStaticObject(ProgramInformation::AssetLocations::getGrassAssetLocation(), 3, 0, 1600, 30, 56);
+
+        addStaticObject(ProgramInformation::AssetLocations::getTreeAssetLocation(), 17, 0, 1600, 30, 0);
     }
 
     const std::vector<std::vector<GridSection>> &WorldGenerator::getTerrainData() const
@@ -86,28 +90,26 @@ namespace World::WorldLogic
 
     // Beginning of private functions
 
-    void WorldGenerator::addTrees()
+    void WorldGenerator::addStaticObject(const std::string &modelLocation, float radius, float min, float max, int numberSamples, int seed)
     {
-        std::vector<std::vector<Objects::StaticObject>> treeStaticObject;
+        std::vector<std::vector<Objects::StaticObject>> staticObject;
 
-        treeStaticObject.insert(treeStaticObject.end(), gridSections.size(), std::vector<Objects::StaticObject>{});
+        staticObject.insert(staticObject.end(), gridSections.size(), std::vector<Objects::StaticObject>{});
 
-        for(auto &i : treeStaticObject)
+        for(auto &i : staticObject)
         {
-            i.insert(i.end(), gridSections.size(), Objects::StaticObject{ProgramInformation::AssetLocations::getTreeAssetLocation()});
+            i.insert(i.end(), gridSections.size(), Objects::StaticObject{modelLocation});
         }
 
-    //    Objects::StaticObject treeStaticObject{ProgramInformation::AssetLocations::getTreeAssetLocation()};
+        float staticObjectRadius = radius;
 
-        float treeRadius = 20.0f;
+        std::array<float, 2> minPoint{min, min};
 
-        std::array<float, 2> minPoint{0, 0};
+        std::array<float, 2> maxPoint{max, max};
 
-        std::array<float, 2> maxPoint{500, 500};
+        auto staticObjectLocations = thinks::PoissonDiskSampling(staticObjectRadius, minPoint, maxPoint, numberSamples, seed);
 
-        auto treeLocations = thinks::PoissonDiskSampling(treeRadius, minPoint, maxPoint);
-
-        for(const auto &i : treeLocations)
+        for(const auto &i : staticObjectLocations)
         {
             unsigned int xPos = i[0];
             unsigned int zPos = i[1];
@@ -116,26 +118,16 @@ namespace World::WorldLogic
 
             unsigned int gridSectionIndex_Z = zPos * 2/ ProgramInformation::WorldSettings::getGridSectionLength();
 
-            treeStaticObject[gridSectionIndex_X][gridSectionIndex_Z].addPosition(glm::vec3{xPos * 2, heightMap[xPos][zPos] + 1, zPos * 2});
+            staticObject[gridSectionIndex_X][gridSectionIndex_Z].addPosition(glm::vec3{xPos * 2, heightMap[xPos][zPos] + 1, zPos * 2});
         }
 
         for(unsigned int i = 0; i < gridSections.size(); ++i)
         {
             for(unsigned int j = 0; j < gridSections[i].size(); ++j)
             {
-                gridSections[i][j].addStaticObject(treeStaticObject[i][j]);
+                gridSections[i][j].addStaticObject(staticObject[i][j]);
             }
         }
-
-//        treeStaticObject.addPosition(glm::vec3{0.f, 75.f, 0.f});
-//
-//        gridSections[0][0].addStaticObject(treeStaticObject);
-//
-//        Objects::StaticObject flowerStaticObject{ProgramInformation::AssetLocations::getFlowerAssetLocation()};
-//
-//        flowerStaticObject.addPosition(glm::vec3{5.f, 75.f, 0.f});
-//
-//        gridSections[0][0].addStaticObject(flowerStaticObject);
     }
 
     unsigned char WorldGenerator::getHeightEast(unsigned int xPos, unsigned int zPos) const

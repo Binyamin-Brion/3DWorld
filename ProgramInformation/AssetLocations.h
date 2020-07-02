@@ -23,6 +23,13 @@ namespace ProgramInformation
         static std::string getFlowerAssetLocation();
 
         /**
+         * Get the location of the grass model file
+         *
+         * @return location of th flower model file on the file system
+         */
+        static std::string getGrassAssetLocation();
+
+        /**
          * Get the location of the skybox model file.
          *
          * @return location of the skybox model file on the file system

@@ -13,14 +13,14 @@ namespace Window::Camera
                         maxAngleLookUp{89.0f},
                         maxAngleLookDown{-80.0f},
                         position{0.f, 85.f, 35.f},
-                        front{0.f, 0.f, -1.0f},
+                        front{1.f, 0.f, 0.0f},
                         up{0.0f, 1.0f, 0.0f},
-                        yaw{-90.0f},
+                        yaw{0.0f},
                         pitch{0.0f},
                         mouseSensitivity{0.1f},
                         movementSpeed{1.0f},
                         firstRotation{true},
-                        drawDistance{250.0f},
+                        drawDistance{200.0f},
                         view{glm::lookAt(position, position + front, up)}
 
     {

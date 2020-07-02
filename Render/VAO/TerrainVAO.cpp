@@ -15,6 +15,8 @@ namespace Render::VAO
 
         loadModel(textureManager,
                   {ProgramInformation::AssetLocations::getSurfaceCubeLocation(),
+                   ProgramInformation::AssetLocations::getFlowerAssetLocation(),
+                   ProgramInformation::AssetLocations::getGrassAssetLocation(),
                    ProgramInformation::AssetLocations::getTreeAssetLocation()
                   });
 
